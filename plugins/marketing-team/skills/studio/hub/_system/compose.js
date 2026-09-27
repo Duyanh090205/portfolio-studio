@@ -102,13 +102,27 @@
       else if (lum > 0.6 && /reversed/.test(id) && have['logo-primary']) el.setAttribute('data-logo', 'logo-primary');
     });
   }
+  // A CTA or badge whose text barely differs from its fill is unreadable: recolour it with the brand's light/dark pair.
+  function rgb(s) { var m = /rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)/.exec(s || ''); return m ? [+m[1], +m[2], +m[3]] : null; }
+  function lum(c) { c = c.map(function (v) { v = v / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+  function ratio(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+  function fixButtonContrast() {
+    Array.prototype.forEach.call(document.querySelectorAll('.cta, .badge'), function (el) {
+      var cs = getComputedStyle(el), fg = rgb(cs.color), bg = rgb(cs.backgroundColor);
+      if (!fg || !bg || /rgba\([^)]*,\s*0\)/.test(cs.backgroundColor) || ratio(fg, bg) >= 3) return;
+      var around = bgLum(el), dark = around !== null && around > 0.4; // light surroundings get a dark button, dark or photo ones a light button
+      el.style.background = dark ? 'var(--dark)' : 'var(--light)'; el.style.color = dark ? 'var(--light)' : 'var(--dark)';
+    });
+  }
   function problems(frame) {
     var out = [], fr = frame.getBoundingClientRect();
     Array.prototype.forEach.call(frame.querySelectorAll('.panel, .copy'), function (z) { // any real text line clipped by its zone?
       var zr = z.getBoundingClientRect();
+      // a clipping zone whose content is taller than the zone hides whatever sits at its end (a CTA, a nested logo)
+      if (getComputedStyle(z).overflowY !== 'visible' && z.scrollHeight > z.clientHeight + 4) out.push('nội dung bị cắt');
       Array.prototype.forEach.call(z.querySelectorAll('.headline, .sub, .kicker, .cta'), function (t) {
-        var tol = parseFloat(getComputedStyle(t).fontSize) * 0.3; // font content box is taller than the ink
-        (t.classList.contains('cta') ? [t.getBoundingClientRect()] : textRects(t)).forEach(function (r) {
+        var cta = t.classList.contains('cta'), tol = cta ? 2 : parseFloat(getComputedStyle(t).fontSize) * 0.3; // text boxes are taller than the ink; a CTA pill is not
+        (cta ? [t.getBoundingClientRect()] : textRects(t)).forEach(function (r) {
           if (r.bottom > zr.bottom + tol || r.top < zr.top - tol || r.right > zr.right + 2 || r.left < zr.left - 2) out.push('chữ tràn khỏi khung');
         });
       });
@@ -165,11 +179,26 @@
     addEventListener('resize', size); size();
   }
 
+  // Headlines never break inside a hyphenated word ("check-/ins"): keep each such word on one line.
+  function keepHyphenatedWords() {
+    Array.prototype.forEach.call(document.querySelectorAll('.headline'), function (h) {
+      var w = document.createTreeWalker(h, NodeFilter.SHOW_TEXT), nodes = [];
+      while (w.nextNode()) if (/\S-\S/.test(w.currentNode.nodeValue)) nodes.push(w.currentNode);
+      nodes.forEach(function (t) {
+        var span = document.createElement('span');
+        span.innerHTML = t.nodeValue.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/(\S+-\S+)/g, '<span style="white-space:nowrap">$1</span>');
+        while (span.firstChild) t.parentNode.insertBefore(span.firstChild, t);
+        t.parentNode.removeChild(t);
+      });
+    });
+  }
+
   function run() {
+    keepHyphenatedWords();
     var logoReady = new Promise(function (done) {
       var s = document.createElement('script');
       s.src = '../logos.js?v=' + Date.now();
-      s.onload = s.onerror = function () { fixLogoContrast(); injectLogos(); done(); };
+      s.onload = s.onerror = function () { fixLogoContrast(); fixButtonContrast(); injectLogos(); done(); };
       document.head.appendChild(s);
     });
     var fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();

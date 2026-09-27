@@ -18,7 +18,7 @@ body { margin: 0; }
 .t-dark { background: var(--dark, #111); color: var(--light, #fff); }
 
 /* ---------- type ---------- */
-.kicker { font-family: var(--font-accent, var(--font-body)); font-size: 4.2cqw; line-height: 1.05; margin: 0 0 1.5cqw; }
+.kicker { font-family: var(--font-accent, var(--font-body)); font-style: var(--accent-style, normal); font-size: 4.2cqw; line-height: 1.05; margin: 0 0 1.5cqw; }
 .headline { font-family: var(--font-headline); font-weight: var(--headline-weight, 800); font-size: 10cqw; line-height: .98;
   letter-spacing: -.01em; margin: 0; text-wrap: balance; overflow-wrap: break-word; }
 .headline.xl { font-size: 13cqw; } .headline.sm { font-size: 7.5cqw; }
@@ -149,13 +149,13 @@ body { margin: 0; }
 .shape.star { clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
 .shape.sparkle { clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); }
 
-/* stories 9:16 (last, so they win): keep copy and logo out of the platform UI zones (top ~12%, bottom ~14%) */
+/* stories 9:16 (last, so they win): keep copy and logo out of the platform UI zones (Instagram: top ~250px, bottom ~340px of 1920) */
 @container (aspect-ratio < 0.6) {
-  .l-photo .copy { bottom: 14cqh; }
-  .logo.tl, .logo.tr { top: 13cqh; } .badge { top: 13cqh; }
-  .l-split .panel, .l-hero .panel, .l-card, .l-type { padding-top: 13cqh; padding-bottom: 14cqh; }
-  .l-split:has(> .logo.tl) > .panel:first-child, .l-card:has(> .logo.tl, > .logo.tr) > .copy { padding-top: calc(13cqh + 13cqw); }
-  .l-type:has(> .logo.tl, > .logo.tr) { padding-top: calc(13cqh + 12cqw); }
+  .l-photo .copy { bottom: 18cqh; }
+  .logo.tl, .logo.tr { top: 14cqh; } .badge { top: 14cqh; }
+  .l-split .panel, .l-hero .panel, .l-card, .l-type { padding-top: 14cqh; padding-bottom: 18cqh; }
+  .l-split:has(> .logo.tl) > .panel:first-child, .l-card:has(> .logo.tl, > .logo.tr) > .copy { padding-top: calc(14cqh + 13cqw); }
+  .l-type:has(> .logo.tl, > .logo.tr) { padding-top: calc(14cqh + 12cqw); }
 }
 /* a corner badge in a centred type layout: keep the copy below it */
 .l-type:has(> .badge) { padding-top: 18cqw; }

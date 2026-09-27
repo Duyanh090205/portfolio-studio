@@ -179,6 +179,7 @@ The user makes these in Gemini or ChatGPT. The HUB adds a copy button and detect
   - a photo of the user's real product, as a path relative to the brand folder (`input/serum-front.png`).
 - **Never name the brand** in a prompt unless `refs` holds a logo. Say "an unbranded pastel pint tub".
 - With a logo ref, write "print the attached logo large, flat and facing the camera on …". With a product-photo ref, write "exactly as in the attached product photo".
+- Every product shown in a prompt must exist in the brief. Name it and give it its `Variant` colour; never "a different tint" or an unnamed second product.
 - If the user's real product appears and `input/` has a photo of it, always add that photo to `refs`. When `kit.product` is set, the HUB also attaches `kit.product.photo` to any photo prompt that uses one of `kit.product.words`.
 - Don't write "no text" or "no watermark"; the HUB adds the branding line.
 - For mockups of a finished design (billboard, poster) and for pure illustration tasks, set `"style": "none"`. The HUB then won't append the photo style block.
@@ -186,7 +187,7 @@ The user makes these in Gemini or ChatGPT. The HUB adds a copy button and detect
 ## brand.css
 Brand-strategist writes it. Other roles create it only if it is missing, using kit values and one variable per colour role:
 - `--primary`, `--secondary`, `--accent`, `--accent-2`, `--light`, `--dark`
-- `--font-headline`, `--headline-weight`, `--font-body`, `--font-accent`
+- `--font-headline`, `--headline-weight`, `--font-body`, `--font-accent`, `--accent-style`
 - one `--v-<kebab-name>` per `Variant` colour
 
 ## Honesty (this is portfolio work)
@@ -199,6 +200,7 @@ Brand-strategist writes it. Other roles create it only if it is missing, using k
   - "(desk research, unverified)" for things not checked against real sources;
   - "(simulated)" for invented numbers (never used for `live`, `content` or `concept`).
 - Never present invented numbers or claims as research, a scan or a study. Keep these labels whenever another role reuses the content.
+- **`concept` and `fictional` brands have no customers yet.** Copy describes how the product or system works; it never reports outcomes as if they happened ("verified by people who used both", "real results", "held up"). The user's own mock UI in `input/` may be shown as it is.
 - Prefer hedged wording ("often", "commonly") over absolutes ("every", "no competitor") unless you checked real evidence.
 - Never write the user's personal story, founder story or reflection. Leave `[Your story: …]` placeholders unless they supplied it.
 

@@ -27,6 +27,8 @@ Otherwise, read `${CLAUDE_SKILL_DIR}/references/conventions.md`, `${CLAUDE_SKILL
 
 ## Build
 1. **Plan the feed.** Choose 3 content pillars that serve `brief.audience` and `kit.essence`. Every post must support the brand's core idea, and none may contradict it. For example, a "made for two" brand never says "split three ways".
+   - For `concept`, check every line against the user's own material in `input/` (how the system works, product names, timings) and never report outcomes as if they exist (conventions, Honesty).
+   - If `input/` has screens of the product's app or system, show one in the set with `data-img="input/…"`: it proves the idea better than any claim.
 2. **Write these 5 visuals in one batch.** Each is a small HTML file using the layout kit, with exactly one logo.
 
 | Output id | Title | Size | Layout | Purpose |
@@ -35,9 +37,9 @@ Otherwise, read `${CLAUDE_SKILL_DIR}/references/conventions.md`, `${CLAUDE_SKILL
 | `post-promo` | Promo post | 1080x1350 | `l-split` + `badge round` with the offer | A clear offer that fits the brand, e.g. a bundle, second-item deal or free topping |
 | `post-awareness` | Brand personality post | 1080x1350 | `l-card` | Mascot, value or ritual |
 | `post-seasonal` | Seasonal post | 1080x1350 | `l-type` | A seasonal or cultural moment for the audience's market |
-| `story-launch` | Launch story | 1080x1920 | `l-photo` | Story version with a sticker-style CTA (stay inside the story safe zones) |
+| `story-launch` | Launch story | 1080x1920 | `l-photo` | Story version. No CTA pill (the user adds a link sticker in the app); write the sticker text in `note` |
 
-3. **Image tasks:** one background photo per visual, with ids `sm-launch`, `sm-promo`, `sm-awareness`, `sm-seasonal` and `sm-story`. Set each `ratio` from the html-guide slot table:
+3. **Image tasks:** one photo per visual unless an existing photo fits (reuse first, see conventions), with ids `sm-launch`, `sm-promo`, `sm-awareness`, `sm-seasonal` and `sm-story`. Set each `ratio` from the html-guide slot table:
    - launch 4:5;
    - promo 16:10;
    - awareness 5:4;
@@ -47,9 +49,12 @@ Otherwise, read `${CLAUDE_SKILL_DIR}/references/conventions.md`, `${CLAUDE_SKILL
    Write each composition for its layout.
 4. **Write `social-media/step.js`:**
    - `summary`: the pillars and how the feed stays consistent;
-   - `outputs`: the 5 visuals, each with `title` and `copy`, plus a `copy` output "Captions & hashtags" with one item per visual (2–4 short lines in brand voice, a CTA, 5–8 hashtags, and a line starting "Alt text:");
+   - `outputs`: the 5 visuals, each with `title` and `copy`, plus a `copy` output "Captions & hashtags" with two items per post:
+     - `"<Title>"`: 2–4 short lines in brand voice, ending "Link in bio." (captions can't hold tappable arrows), then at most 5 relevant hashtags (no generic hype tags, none owned by other brands);
+     - `"<Title> · alt text"`: "Text: <the on-image text>." then what the photo actually shows.
+     - The story item holds only the link-sticker text, with no hashtags.
    - `images`: the 5 photo tasks.
 5. **Edit `brand.js`:**
    - `steps.social-media` → `review`;
-   - `next` → `{ "text": "Xem 5 thiết kế ở tab Social, tạo 5 ảnh nền ở tab Ảnh cần tạo. Ưng thì duyệt, hoặc gõ thẳng lệnh bước tiếp theo.", "say": "Duyệt Social Media <Name>" }`.
+   - `next` → `{ "text": "Xem 5 thiết kế ở tab Social, rồi tạo ảnh ở tab Ảnh cần tạo. Ưng thì duyệt, hoặc gõ thẳng lệnh bước tiếp theo.", "say": "Duyệt Social Media <Name>" }`.
 6. **Verify, then reply** with the ending block.

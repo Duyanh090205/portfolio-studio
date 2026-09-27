@@ -92,6 +92,7 @@ Documents don't use `.frame`. Link `../brand.css` and `compose.js`; logos and im
   <div class="embed" style="width:540px;height:675px;overflow:hidden"><iframe src="../social-media/post-launch.html" style="width:1080px;height:1350px;border:0;transform:scale(.5);transform-origin:0 0"></iframe></div>
   ```
 - **Mockup photos:** use `<img data-img="oh-billboard-mockup">`. They show once generated.
+- **Typography:** typographic apostrophes and quotes (’ “ ”). Follow the case style of the user's own materials; otherwise use sentence case for headlines.
 - **The user's own photos:** `<img data-img="input/back-label.png">` (a path relative to the brand folder) shows that file as is. Use it instead of an image task whenever `input/` already has the right shot.
 
 ### Chart.js rules

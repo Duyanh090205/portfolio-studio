@@ -125,7 +125,7 @@ HUB.logos("cemmy", [
 :root {
   --primary: #1F4A36; --secondary: #FFB9CE; --accent: #C9B6F2; --accent-2: #E4568A; --light: #FFF8F3; --dark: #241B22;
   --font-headline: 'Baloo 2', sans-serif; --headline-weight: 800;
-  --font-body: 'Nunito', sans-serif; --font-accent: 'Caveat', cursive;
+  --font-body: 'Nunito', sans-serif; --font-accent: 'Caveat', cursive; --accent-style: normal;   /* italic if kit.typography.accent.style is italic */
   --v-strawberry-pink: #F28DB2; --v-blueberry-blue: #5B6FD6;   /* one per Variant colour */
 }
 ```
