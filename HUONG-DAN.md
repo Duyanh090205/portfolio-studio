@@ -21,6 +21,7 @@ Một **team marketing gồm 9 "nhân sự" Claude** giúp bạn làm portfolio 
      /plugin marketplace add Duyanh090205/portfolio-studio
      /plugin install marketing-team@portfolio-studio
      ```
+     Cài bằng cách B thì plugin **không hiện** ở trang Customize → Plugins. Chuyện này bình thường, plugin vẫn chạy trong tab Code.
 4. **Mở tab Code:** trong Claude Desktop chọn tab **Code** → chọn thư mục ở bước 2 (Open folder). Đây là cách chạy khuyên dùng, và là cách đã được test kỹ nhất.
 5. **Setup:**
    - Chọn model **Sonnet** ở nút cạnh ô gửi.
@@ -44,9 +45,17 @@ Một **team marketing gồm 9 "nhân sự" Claude** giúp bạn làm portfolio 
 3. **Làm tiếp:** ở trang dự án trong HUB, ô **Việc tiếp theo** luôn có sẵn câu cần gõ. Bấm **Copy**, dán vào Claude. Bước nào không hợp với loại dự án sẽ hiện mờ, ghi "Không áp dụng".
 4. **Tạo ảnh:** Claude không vẽ ảnh chụp. Vào tab **Ảnh cần tạo**:
    - Lần đầu, bấm **📂 Chọn thư mục** và chọn thư mục Portfolio Studio, để HUB được phép lưu ảnh.
-   - Copy prompt sang **Gemini** hoặc **ChatGPT**.
-   - Ưng ảnh nào thì **chuột phải → Sao chép hình ảnh**, quay lại HUB, **bấm vào ô của ảnh đó rồi Ctrl+V**. Cũng có thể kéo thả file ảnh vào ô.
-   - Ảnh tự lưu đúng tên và tự vào mọi thiết kế.
+   - Mỗi ảnh ghi sẵn **nên dùng công cụ nào**:
+     - **Gemini:** phần lớn ảnh.
+     - **ChatGPT:** ảnh chủ lực cần giống sản phẩm thật nhất.
+     - **Canva:** ghép logo thật lên túi, hộp, thiệp bằng app Mockups, để logo chuẩn 100%.
+   - Bấm **Copy prompt**. Nếu có **ảnh tham chiếu đánh số 1, 2…** thì đính kèm vào Gemini/ChatGPT **đúng thứ tự** trước khi dán prompt:
+     - logo: bấm **PNG** để tải;
+     - ảnh chụp: chuột phải → Sao chép hình ảnh → Ctrl+V.
+   - Ảnh **gần đúng**: mở **Câu sửa nhanh** dưới ảnh, copy câu hợp lỗi (sai tỉ lệ, logo méo, có chữ lạ…), dán tiếp vào **cùng chat**. Đừng tạo lại từ đầu.
+   - Làm các ảnh của một bước trong **cùng một chat Gemini** cho đồng bộ.
+   - Ưng ảnh nào thì **tải về rồi kéo thả** vào ô của ảnh đó, hoặc chuột phải → Sao chép hình ảnh → bấm vào ô → **Ctrl+V**. Ảnh tự lưu đúng tên và tự vào mọi thiết kế.
+   - Billboard và bao bì: AI tạo **cảnh để trống**, rồi bạn ghép thiết kế thật vào bằng Canva. HUB có hướng dẫn ngay ở ảnh đó.
    - Với brand thật: ảnh sản phẩm là **ảnh bạn tự chụp**. HUB ghi hướng dẫn chụp thay cho prompt.
 5. **Duyệt hoặc sửa:**
    - Ưng thì gõ lệnh **Duyệt …**, hoặc gõ thẳng lệnh bước tiếp theo (bước trước tự được duyệt).
@@ -58,7 +67,7 @@ Một **team marketing gồm 9 "nhân sự" Claude** giúp bạn làm portfolio 
 | # | Thành viên | Câu lệnh | Model |
 |---|---|---|---|
 | 0 | Brief | `Tạo brand mới` | Sonnet |
-| 1 | Brand Strategist | `Làm Brand Strategist cho <brand>` | **Opus** |
+| 1 | Brand Strategist | `Làm Brand Strategist cho <brand>` | **Opus** với brand mới · Sonnet với dự án nhập có sẵn |
 | 2 | Social Media Creative | `Làm Social Media cho <brand>` | Sonnet |
 | 3 | Campaign Designer | `Làm Campaign cho <brand>` | Sonnet |
 | 4 | Packaging Designer | `Làm Packaging cho <brand>` | Sonnet |
@@ -85,6 +94,17 @@ Một **team marketing gồm 9 "nhân sự" Claude** giúp bạn làm portfolio 
 | **PDF** (proposal, report, brand board) | **Ctrl+P** → Lưu dưới dạng PDF → tích **Đồ họa nền** |
 | **MP4** (video) | Mở riêng → **F11** → **Win+Shift+R** → quay 1 vòng |
 | **Claude Design** (tuỳ chọn) | Nút **🎨 Mang sang Claude Design** ở tab Brand board, để đánh bóng 2–3 tác phẩm chủ lực |
+
+---
+
+## Cập nhật phiên bản mới
+- **Cài bằng cách A** (Customize → Plugins, có bật Sync automatically): plugin tự cập nhật.
+- **Cài bằng cách B:** trong tab Code, gõ lần lượt:
+  ```
+  /plugin marketplace update portfolio-studio
+  /plugin update marketing-team@portfolio-studio
+  ```
+- Sau đó mở **phiên mới** và gõ `Setup Portfolio Studio`. Claude chỉ thay HUB (`HUB.html`, `_system/`), **không đụng** vào các brand của bạn.
 
 ---
 

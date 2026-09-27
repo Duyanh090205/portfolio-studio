@@ -43,7 +43,12 @@ Otherwise, read `${CLAUDE_SKILL_DIR}/references/conventions.md`, `${CLAUDE_SKILL
 | `bag-front` | Paper bag | 1200x1400 | Paper bag or tote front: a big logo or pattern, one line of copy |
 | `thank-you-card` | Thank-you card | 1500x1050 | A6 insert card in brand voice with a small community CTA |
 
-3. **Mockup image tasks** (photoreal, all with `refs: ["logo-primary"]`, prompts naming the pack shape, colours by name and where the attached logo goes):
+3. **Mockup image tasks** (photoreal, prompts naming the pack shape and colours by name):
+   - `pk-range`:
+     - if `input/` has a photo of the user's real product, put it in `refs`, use `"tool": "ChatGPT"`, and show the range "exactly as in the attached product photo" with only the variant colours changed (see `Variant` colours). No `composite`.
+     - otherwise `"tool": "Gemini"` with `"composite": "Canva"` and no `refs`: the packs are **blank, flat and facing the camera**, so the user drops the real artwork PNGs in with Canva Mockups.
+   - `pk-bags`: `"tool": "Gemini"` with `"composite": "Canva"`, no `refs`: bag, tote and box fronts are **blank, flat and facing the camera**.
+   - `pk-unboxing`: `refs: ["logo-primary"]`, logo printed large and flat on the lid. If `input/` has a photo of the real product, add it to `refs`.
 
 | Id | Ratio | What |
 |---|---|---|
@@ -58,5 +63,5 @@ Otherwise, read `${CLAUDE_SKILL_DIR}/references/conventions.md`, `${CLAUDE_SKILL
    - `images`.
 5. **Edit `brand.js`:**
    - the step → `review`;
-   - `next` → `{ "text": "Xem artwork ở tab Packaging, tạo ảnh mockup (đính kèm logo PNG). Ưng thì duyệt, hoặc gõ thẳng lệnh bước tiếp theo.", "say": "Duyệt Packaging <Name>" }`.
+   - `next` → `{ "text": "Xem artwork ở tab Packaging, tạo ảnh mockup rồi ghép artwork trong Canva (hướng dẫn ở tab Ảnh cần tạo). Ưng thì duyệt, hoặc gõ thẳng lệnh bước tiếp theo.", "say": "Duyệt Packaging <Name>" }`.
 6. **Verify, then reply** with the ending block.

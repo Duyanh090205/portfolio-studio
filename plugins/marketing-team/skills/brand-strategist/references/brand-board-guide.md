@@ -60,14 +60,15 @@ Write 2–3 sentences each, concrete enough for another designer to follow:
 - `packaging`: materials, base colour, logo placement, how flavours or variants are colour-coded.
 - `applications`: 3–4 touchpoints, e.g. cup, tote, storefront, uniform, delivery bag.
 
-## promptBlock (60–90 words)
-A reusable style suffix that the HUB appends to every image prompt of this brand. Include:
-- the palette by colour name and hex;
+## promptBlock (40–70 words)
+A reusable style paragraph that the HUB appends to every photo prompt of this brand. Keep it identical every time. Include:
+- the palette by colour name tied to materials ("sage-green glass, oat linen"), never hex codes;
 - lighting and camera style;
 - surface and props vocabulary;
 - mood words;
-- "clean commercial product photography" or the illustration equivalent;
-- "no text, no watermark, no extra logos".
+- "clean commercial product photography" or the illustration equivalent.
+
+No negatives such as "no text": the HUB adds the branding line. Never name the brand in it.
 
 ## Image tasks: exactly 8, all with `"step": "brand-strategist"`, stored in `brand-strategist/step.js`
 
@@ -77,19 +78,19 @@ A reusable style suffix that the HUB appends to every image prompt of this brand
 | `bs-product-detail` | Photography direction | 1:1 | – | Close-up of texture or ingredient |
 | `bs-lifestyle` | Photography direction | 4:5 | – | A real moment of the audience using the product |
 | `bs-mascot` | Mascot / illustration style | 1:1 | – | Mascot or illustration style sample on a plain background |
-| `bs-social-1` | Social media visual style | 4:5 | – | A post-style visual with an empty area for a headline (added later in Canva) |
+| `bs-social-1` | Social media visual style | 4:5 | – | A post background with a calm, empty lower area (the HTML layout adds the headline) |
 | `bs-social-2` | Social media visual style | 4:5 | – | A different post type, e.g. flat lay or colour-block composition |
 | `bs-packaging-family` | Packaging direction | 4:3 | logo-primary | The packaging range together, with the logo on each piece |
-| `bs-brand-application` | Brand applications | 4:3 | logo-primary | Tote, storefront or merchandise with the logo |
+| `bs-brand-application` | Brand applications | 4:3 | logo-primary | Tote, bag or card with the real logo: `"tool": "Canva"` (a mockup, see conventions) |
 
 Prompt rules:
-- One English paragraph of 50–100 words. Cover the subject, setting, composition and camera (angle, lens feel), lighting, colours by name, props and mood.
+- Follow the image-task rules in conventions: scene only, 50–90 words, colours by name, no hex, no "headline" or "text".
 - **Never** ask the model to invent the logo or brand lettering. When a logo should appear:
   - put `logo-primary` in `refs`;
-  - write "place the attached logo on the <surface>, flat, centered, undistorted".
-- Headlines and text are added later in Canva, so ask for empty space instead, e.g. "leave clean empty space in the upper third for a headline".
-- `tool`: "Gemini" for most tasks. Use "ChatGPT" for the one most important photoreal hero if it demands perfection.
+  - write "print the attached logo large, flat and facing the camera on the <surface>".
+- Headlines are added later by the HTML layouts, so describe what fills the empty area instead, e.g. "the upper third is plain, softly lit plaster wall".
+- `tool`: "Gemini" for most tasks. "ChatGPT" for `bs-hero-product` when it must reproduce a real product or a lineup. "Canva" for `bs-brand-application`.
 - Don't repeat the promptBlock inside the prompt. The HUB adds it.
 - For `bs-mascot`, set `"style": "none"` because it is an illustration. Describe the illustration style yourself.
 - Never name the brand in a prompt without a logo ref. Say "an unbranded … pint".
-- Composition: `bs-social-1` and `bs-social-2` are backgrounds for `l-photo` posts, so put the subject in the upper half and keep the lower 45% calm for the headline.
+- Composition: `bs-social-1` and `bs-social-2` are backgrounds for `l-photo` posts, so put the subject in the upper half and say what fills the calm lower 45% (e.g. "the plain face of the plinth"). Never write "headline" in the prompt.

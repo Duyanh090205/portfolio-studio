@@ -3,7 +3,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '0.4.1';
+  var VERSION = '0.4.2';
   var S = { portfolio: null, brands: {}, logos: {}, steps: {}, errors: [], img: {}, sel: null, cd: false, qa: {}, dir: null, dirOk: false };
 
   window.HUB = {
@@ -27,7 +27,7 @@
       desc: 'Kể ý tưởng brand bằng tiếng Việt. Claude hỏi thêm vài câu rồi viết brief chiến lược (tiếng Anh).',
       say: 'Tạo brand mới', gets: 'Brief: sản phẩm, khách hàng, vấn đề/cơ hội, tính cách brand, đối thủ.',
       where: 'Tab Brief', exp: 'Là mục 01 The Problem trong case study.' },
-    { id: 'brand-strategist', n: '1', name: 'Brand Strategist', vi: 'Nền móng thương hiệu', model: 'Opus', weight: 'Nặng', ready: true,
+    { id: 'brand-strategist', n: '1', name: 'Brand Strategist', vi: 'Nền móng thương hiệu', model: 'Opus', modelNote: 'Opus (brand mới) · Sonnet (dự án nhập có sẵn)', weight: 'Nặng', ready: true,
       desc: 'Đề xuất 3 hướng sáng tạo. Bạn chọn một, Claude dựng brand board: logo, màu, font, phong cách hình ảnh.',
       say: 'Làm Brand Strategist cho {name}', approve: 'Duyệt brand board {name}',
       gets: '3 hướng để chọn → 5 logo (SVG), bảng màu có tên, 3 font, positioning & giọng văn, hướng ảnh / mascot / bao bì, 8 prompt ảnh.',
@@ -653,6 +653,11 @@
       '<section class="grid">' + cards + '</section></main>';
   }
 
+  // Brand Strategist needs Opus only when it invents an identity; imports just organise what exists.
+  function modelFor(s, b) {
+    return s.id === 'brand-strategist' && b && (b.projectType === 'concept' || b.projectType === 'content') ? 'Sonnet' : (s.model || 'Sonnet');
+  }
+
   function stepper(b) {
     function node(s) {
       var st = effStatus(b, s.id);
@@ -665,7 +670,7 @@
       '<div class="extras"><span class="muted small">Thành viên thêm (tuỳ chọn):</span>' + extra.map(node).join('') + '</div>';
     if (S.sel) {
       var s = STEPS.filter(function (x) { return x.id === S.sel; })[0], d = stepOf(b, s.id), st = effStatus(b, s.id), say = fill(s.say, b);
-      var cmds = '<p class="small">Gõ cho Claude (model <b>' + esc(s.model || 'Sonnet') + '</b>):</p><p class="say">' + esc(say) + '</p>' + copyBtn(say, 'Copy câu lệnh');
+      var cmds = '<p class="small">Gõ cho Claude (model <b>' + esc(modelFor(s, b)) + '</b>):</p><p class="say">' + esc(say) + '</p>' + copyBtn(say, 'Copy câu lệnh');
       if (st === 'skip') { var on = 'Bật lại ' + s.name + ' cho ' + b.name; cmds = '<p class="small">Bước này không dùng cho <b>' + esc(typeLabel(b)) + '</b>. Muốn dùng thì gõ:</p><p class="say">' + esc(on) + '</p>' + copyBtn(on, 'Copy câu lệnh'); }
       if (st === 'review' && s.approve) cmds = '<p class="small">Ưng rồi thì duyệt:</p><p class="say">' + esc(fill(s.approve, b)) + '</p>' + copyBtn(fill(s.approve, b), 'Copy câu lệnh', 'primary') +
         '<p class="small" style="margin-top:10px">Hoặc làm lại / sửa: nói rõ muốn đổi gì.</p>';
@@ -772,10 +777,16 @@
       if (logos.length > 1) out += section('Logo variations', '<div class="logos">' + logos.slice(1).map(function (l) { return logoCard(b, l); }).join('') + '</div>');
     }
     if (k.colors && k.colors.length) {
-      out += section('Color palette', '<div class="palette">' + k.colors.map(function (c) {
-        return '<button class="sw" data-copy="' + clip(c.hex) + '" style="background:' + c.hex + ';color:' + onColor(c.hex) + '" title="Bấm để copy mã màu">' +
-          '<b>' + esc(c.name) + '</b><span>' + esc(c.hex) + '</span><small>' + esc(c.role || '') + '</small></button>';
-      }).join('') + '</div>' + '<div class="uses">' + k.colors.map(function (c) { return c.use ? '<p><i style="background:' + c.hex + '"></i><b>' + esc(c.name) + ':</b> ' + esc(c.use) + '</p>' : ''; }).join('') + '</div>', 'span2');
+      var isVar = function (c) { return (c.role || '').toLowerCase() === 'variant'; };
+      var sws = function (cs) {
+        return '<div class="palette">' + cs.map(function (c) {
+          return '<button class="sw" data-copy="' + clip(c.hex) + '" style="background:' + c.hex + ';color:' + onColor(c.hex) + '" title="Bấm để copy mã màu">' +
+            '<b>' + esc(c.name) + '</b><span>' + esc(c.hex) + '</span><small>' + esc(c.role || '') + '</small></button>';
+        }).join('') + '</div>';
+      };
+      var vars = k.colors.filter(isVar);
+      out += section('Color palette', sws(k.colors.filter(function (c) { return !isVar(c); })) +
+        (vars.length ? '<h5 class="subh">Product-line colours</h5>' + sws(vars) : '') + '<div class="uses">' + k.colors.map(function (c) { return c.use ? '<p><i style="background:' + c.hex + '"></i><b>' + esc(c.name) + ':</b> ' + esc(c.use) + '</p>' : ''; }).join('') + '</div>', 'span2');
     }
     if (k.typography) {
       out += section('Typography system', ['headline', 'body', 'accent'].map(function (role) {
@@ -820,13 +831,96 @@
     return out;
   }
 
+  // A ref is a logo id, another image task's id, or the user's own photo (path relative to the brand folder).
+  // `role` tells the image model what the attached picture is for; the user attaches refs in this order (Image 1, 2…).
+  function refOf(b, id, n) {
+    var num = n ? '<span class="rnum">' + n + '</span>' : '';
+    var l = (S.logos[b.slug] || []).filter(function (x) { return x.id === id; })[0];
+    if (l) {
+      var words = [], m, re = /<text[^>]*>([^<]*)<\/text>/g;
+      while ((m = re.exec(l.svg || ''))) if (m[1].trim()) words.push(m[1].trim());
+      var word = words.join(' ') || (l.src ? b.name : '');
+      var spelled = word.replace(/[^A-Za-z0-9 ]/g, '').toUpperCase().split(/\s+/).filter(Boolean).map(function (w) { return w.split('').join('-'); }).join(' ');
+      return { kind: 'logo', n: n, name: l.name,
+        role: 'the brand logo' + (word ? ' "' + word + '" (spelled ' + spelled + ')' : '') + ': copy it exactly, with the same letterforms, spelling, proportions and colour, and print it large, flat and facing the camera',
+        html: '<span class="ref">' + num + '<span class="mini" style="background:' + (l.bg === 'dark' ? (color(b, 'Dark') || primary(b)) : '#fff') + '">' + l.svg + '</span>' + esc(l.name) +
+          ' <button class="btn tiny" data-png="' + esc(b.slug) + '|' + esc(l.id) + '">PNG</button></span>' };
+    }
+    var im = allImages(b).filter(function (x) { return x.id === id; })[0];
+    if (im) {
+      var u = S.img[b.slug + '/' + id];
+      return { kind: 'image', n: n, name: im.title,
+        role: 'the approved "' + im.title + '" image: match its lighting, colour grade and surfaces',
+        html: '<span class="ref" title="Chuột phải ảnh → Sao chép hình ảnh → Ctrl+V vào Gemini">' + num + (u ? '<img class="mini" src="' + u + '" alt="">' + esc(im.title) : esc(im.title) + ' <small class="muted">(tạo ảnh này trước)</small>') + '</span>' };
+    }
+    if (/[\/.]/.test(id)) {
+      var f = id.split('/').pop(), path = 'brands/' + b.slug + '/' + id;
+      return { kind: 'product', n: n, name: 'the product photo ' + f,
+        role: 'the exact product: keep its shape, proportions, materials, colours, cap and printed type as photographed, except where the description below says otherwise, and do not redesign it',
+        html: '<a class="ref" href="' + esc(path) + '" target="_blank" rel="noopener" title="Chuột phải ảnh → Sao chép hình ảnh → Ctrl+V vào Gemini">' + num + '<img class="mini" src="' + esc(path) + '" alt="">' + esc(f) + '</a>' };
+    }
+    return { kind: 'none', n: n, name: id, role: '', html: '' };
+  }
+  function refsOf(b, im) {
+    return (im.refs || []).map(function (id, i) { return refOf(b, id, i + 1); }).filter(function (r) { return r.kind !== 'none'; });
+  }
+  // Gemini only makes these ratios; ask for the nearest one and let the slot crop the small difference.
+  var GEN_RATIOS = ['1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9'];
+  function genRatio(ratio) {
+    var p = String(ratio || '1:1').split(':'), v = Math.log((+p[0] || 1) / (+p[1] || 1));
+    return GEN_RATIOS.reduce(function (best, r) { var q = r.split(':'); return Math.abs(Math.log(q[0] / q[1]) - v) < Math.abs(Math.log(best.split(':')[0] / best.split(':')[1]) - v) ? r : best; }, '1:1');
+  }
+  function orient(ratio) { var p = String(ratio || '1:1').split(':'), w = +p[0], h = +p[1]; return w > h ? 'horizontal' : w < h ? 'vertical' : 'square'; }
+  // The brand style block, cleaned for image models: colour names only (hex codes add little) and no negatives (the closing line covers them).
+  function styleText(b) {
+    return String((b.kit && b.kit.promptBlock) || '')
+      .replace(/\s*\(\s*#[0-9a-f]{3,8}\s*\)|\s*#[0-9a-f]{6}\b/gi, '')
+      .replace(/[,;]?\s*\bno (?:extra |other |added )?(?:text|lettering|watermarks?|logos?)\b/gi, '')
+      .replace(/\s+([,.])/g, '$1').trim();
+  }
+  // Prompt order follows Google's and OpenAI's guides: intent + format, reference roles, scene, style, what may carry branding, ratio.
   function promptText(b, im) {
-    var refs = (im.refs || []).map(function (id) {
-      var l = (S.logos[b.slug] || []).filter(function (x) { return x.id === id; })[0]; return l ? l.name : id;
-    });
-    return im.prompt + '\n\nAspect ratio: ' + (im.ratio || '1:1') + '.' +
-      (refs.length ? '\nUse the attached reference image(s) exactly as provided (' + refs.join(', ') + '). Do not redraw or alter the logo.' : '') +
-      (b.kit && b.kit.promptBlock && im.style !== 'none' && im.tool !== 'Camera' ? '\n\n' + b.kit.promptBlock : '');
+    if (im.composite && im.tool === 'Canva') im = Object.assign({}, im, { tool: 'Gemini' });
+    var r = genRatio(im.ratio), o = orient(r);
+    if (im.tool === 'Camera') return im.prompt + '\n\nAspect ratio: ' + r + ' (' + o + ').';
+    // Canva tasks: the description doubles as a fallback AI scene, with the logo printed on the item.
+    if (im.tool === 'Canva') im = Object.assign({}, im, { tool: 'Gemini', prompt: im.prompt.charAt(0).toUpperCase() + im.prompt.slice(1) + '. ' + ((im.refs || []).length ? 'Print the attached logo large, flat and facing the camera on the front of it. ' : '') + 'Simple, uncluttered setting.' });
+    var rs = refsOf(b, im), logo = rs.filter(function (x) { return x.kind === 'logo'; })[0], prod = rs.filter(function (x) { return x.kind === 'product'; })[0];
+    var photo = im.style !== 'none', L = [];
+    L.push('Create a ' + (photo ? 'photorealistic ' : '') + o + ' ' + r + ' ' + (photo ? 'photograph' : 'image') + ' for a brand portfolio (' + (im.title || im.group || '') + ').');
+    rs.forEach(function (x) { L.push('Image ' + x.n + ' is ' + x.role + '.'); });
+    L.push('', im.prompt);
+    var st = photo ? styleText(b) : '';
+    if (st) L.push('', st);
+    L.push('', im.composite ? 'Every surface, including the blank area, is plain and unmarked, with no text, letters, logos or watermark.' :
+      logo ? 'The only branding visible is the logo from Image ' + logo.n + '; every other surface is plain and unmarked, with no added text or watermark.' :
+      prod ? 'The only branding visible is the product\'s own printed type from Image ' + prod.n + '; every other surface is plain and unmarked, with no added text or watermark.' :
+      'Every surface is plain and unmarked, with no text, letters, logos or watermark.');
+    L.push('Aspect ratio: ' + r + ' (' + o + ').');
+    return L.join('\n');
+  }
+  // Follow-up edits for an image that is almost right: fix one thing in the same chat instead of starting over.
+  function fixList(b, im) {
+    var rs = refsOf(b, im), logo = rs.filter(function (x) { return x.kind === 'logo'; })[0], prod = rs.filter(function (x) { return x.kind === 'product'; })[0];
+    var r = genRatio(im.ratio), o = orient(r);
+    var pal = ((b.kit && b.kit.colors) || []).filter(function (c) { return (c.role || '').toLowerCase() !== 'variant'; }).slice(0, 3).map(function (c) { return c.name.toLowerCase(); }).join(', ');
+    return [
+      ['Sai tỉ lệ khung', 'Keep everything exactly the same, but make the image ' + o + ' ' + r + ': extend the background, do not crop or stretch the subject.', true],
+      prod && ['Sản phẩm bị vẽ khác', 'Same scene and lighting; make the product match Image ' + prod.n + ' exactly: shape, proportions, material and colour, cap and printed type. Change nothing else.'],
+      logo && ['Logo méo, sai chữ', 'Make the logo exactly like Image ' + logo.n + ': same letterforms and spelling, larger, flat and facing the camera. Change nothing else.'],
+      ['Có chữ lạ', (logo || prod ? 'Remove every letter or word that is not on the product or the logo.' : 'Remove every letter, word and logo from the image.') + ' Change nothing else.'],
+      ['Rối mắt', 'Remove the extra props and simplify the background. Do not move the main subject. Keep everything else the same.'],
+      ['Cần chỗ trống bên dưới', 'Keep the composition, but move the subject up so the bottom 45% of the frame is calm, empty background. Keep everything else the same.'],
+      ['Ánh sáng gắt', 'Keep everything; make the light softer and warmer, like early-morning window light.'],
+      pal && ['Màu lệch brand', 'Keep everything; shift the colours toward ' + pal + ', slightly less saturated.'],
+      im.style !== 'none' && ['Trông giả, như 3D', 'Make it look like a real photograph: natural shadows, real material texture, slight imperfections, not CGI. Change nothing else.']
+    ].filter(Boolean);
+  }
+  function blankCanvas(ratio) {
+    var p = String(ratio || '1:1').split(':'), w = +p[0] || 1, h = +p[1] || 1, c = document.createElement('canvas');
+    c.width = w >= h ? 1440 : Math.round(1440 * w / h); c.height = w >= h ? Math.round(1440 * h / w) : 1440;
+    var x = c.getContext('2d'); x.fillStyle = '#ffffff'; x.fillRect(0, 0, c.width, c.height);
+    download(c.toDataURL('image/png'), 'khung-trong-' + w + 'x' + h + '.png');
   }
   function viewImages(b) {
     var ims = allImages(b);
@@ -834,12 +928,14 @@
     var c = imgCounts(b);
     var how = '<div class="how"><h3>Cách tạo ảnh (' + c.have + '/' + c.total + ' đã có)</h3>' + dirBanner() + '<ol>' +
       '<li>Bấm <b>Copy prompt</b> ở ảnh cần tạo.</li>' +
-      '<li>Mở <a href="https://gemini.google.com/app" target="_blank" rel="noopener">Gemini</a> (hoặc <a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a>), dán prompt. Nếu có <b>ảnh tham chiếu</b>, bấm PNG để tải logo rồi đính kèm vào.</li>' +
-      '<li>Ưng ảnh nào thì đưa vào ô của ảnh đó, chọn 1 trong 3 cách:<br>' +
-      '• <b>Chuột phải ảnh → Sao chép hình ảnh</b>, quay lại đây <b>bấm vào ô → Ctrl+V</b><br>' +
-      '• hoặc tải ảnh về rồi <b>kéo thả</b> file vào ô<br>' +
-      '• hoặc <b>bấm đúp vào ô</b> để chọn file</li>' +
-      '<li>Xong! Ảnh tự đổi đúng tên, lưu đúng thư mục, và tự vào mọi thiết kế dùng nó ✨ Muốn thay ảnh thì cứ đưa ảnh mới vào cùng ô.</li></ol></div>';
+      '<li>Mở <a href="https://gemini.google.com/app" target="_blank" rel="noopener">Gemini</a> hoặc <a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a> (xem dòng “Nên tạo bằng”). Nếu có <b>ảnh tham chiếu</b>, đính kèm <b>đúng thứ tự số 1, 2…</b>: logo thì bấm PNG để tải; ảnh chụp thì <b>chuột phải → Sao chép hình ảnh → Ctrl+V</b> vào ô chat. Rồi dán prompt và gửi.</li>' +
+      '<li>Ảnh <b>gần đúng</b> thì đừng tạo lại từ đầu: mở <b>Câu sửa nhanh</b> ở ảnh đó, copy câu hợp lỗi, dán tiếp vào cùng chat. Sửa 2 lần chưa được thì mở chat mới và đính kèm ảnh tốt nhất.</li>' +
+      '<li>Ưng rồi thì đưa ảnh vào ô của nó: <b>tải ảnh về</b> (bản nét nhất) rồi <b>kéo thả</b> vào ô, hoặc chuột phải ảnh → Sao chép hình ảnh → <b>bấm vào ô → Ctrl+V</b>, hoặc bấm đúp vào ô để chọn file. Ảnh tự đổi đúng tên, lưu đúng chỗ và tự vào mọi thiết kế ✨</li></ol>' +
+      '<details class="tips"><summary>Mẹo để ít phải tạo lại</summary><ul>' +
+      '<li><b>Gemini:</b> làm cả bộ ảnh của một bước trong <b>cùng một chat</b> cho đồng bộ. Đừng chọn model bản “Lite”. Có gói trả phí thì ảnh lỗi logo/nhãn dùng <b>⋮ → Redo with Pro</b>.</li>' +
+      '<li><b>ChatGPT:</b> chọn tỉ lệ ở nút <b>Aspect ratio</b> trước khi gửi. Có Plus thì chọn model Thinking cho ảnh nhiều sản phẩm.</li>' +
+      '<li><b>Canva:</b> ảnh có ghi “Làm trong Canva” là để ghép <b>logo thật</b> lên túi, hộp, thiệp. Logo chuẩn 100%, không bị AI vẽ méo.</li>' +
+      '<li>Gemini gắn dấu ✦ ở góc ảnh; nếu Cài đặt có mục <b>Media Watermark</b> thì tắt được. Khi đăng portfolio vẫn ghi rõ ảnh làm bằng AI.</li></ul></details></div>';
     var byStep = {};
     ims.forEach(function (im) { (byStep[im.step] = byStep[im.step] || []).push(im); });
     var out = how;
@@ -847,20 +943,33 @@
       var list = byStep[s.id]; if (!list) return;
       out += '<h2 class="grouph">' + esc(s.name) + '</h2><div class="tasks">' + list.map(function (im) {
         var u = S.img[b.slug + '/' + im.id];
-        var refs = (im.refs || []).map(function (id) {
-          var l = (S.logos[b.slug] || []).filter(function (x) { return x.id === id; })[0];
-          return l ? '<span class="ref"><span class="mini" style="background:' + (l.bg === 'dark' ? (color(b, 'Dark') || primary(b)) : '#fff') + '">' + l.svg + '</span>' + esc(l.name) +
-            ' <button class="btn tiny" data-png="' + esc(b.slug) + '|' + esc(l.id) + '">PNG</button></span>' : '';
-        }).join('');
+        var refs = refsOf(b, im).map(function (x) { return x.html; }).join('');
+        if (im.composite && im.tool === 'Canva') im = Object.assign({}, im, { tool: 'Gemini' });
+        var canva = im.tool === 'Canva', cam = im.tool === 'Camera';
+        var tool = cam ? '<span>📱 Tự chụp</span>' : canva ? '<span>Làm trong Canva (ghép logo thật)</span>' :
+          '<span>Nên tạo bằng: ' + esc(im.tool || 'Gemini') + (im.composite ? ' → ghép thiết kế trong Canva' : '') + (im.ai ? ' · nhớ gắn nhãn AI khi đăng' : '') + '</span>';
+        var guide = canva ? '<details open><summary>Cách làm trong Canva</summary><ol class="small">' +
+            '<li>Bấm <b>PNG</b> ở logo bên trên để tải logo.</li>' +
+            '<li>Mở Canva, vào mục <b>Apps</b>, tìm <b>Mockups</b>.</li>' +
+            '<li>Chọn mẫu giống mô tả: <i>' + esc(im.prompt) + '</i></li>' +
+            '<li>Kéo logo PNG vào vùng in, chỉnh cỡ cho cân → <b>Tải xuống PNG</b> → thả vào ô bên trái.</li></ol></details>' +
+          '<details><summary>Không tìm được mẫu ưng ý? Tạo bằng Gemini</summary><p class="small muted">Nhanh hơn nhưng logo có thể hơi méo; dùng Câu sửa nhanh nếu cần.</p><pre>' + esc(promptText(b, im)) + '</pre>' + copyBtn(promptText(b, im), 'Copy prompt Gemini') + '</details>' :
+          '<details><summary>' + (cam ? 'Xem hướng dẫn chụp' : 'Xem prompt') + '</summary><pre>' + esc(promptText(b, im)) + '</pre></details>' +
+          (im.composite ? '<details><summary>Ghép thiết kế trong Canva</summary><ol class="small">' +
+            '<li>Tạo ảnh cảnh bằng prompt này: vùng bảng/nhãn sẽ để trống.</li>' +
+            '<li>Chụp thiết kế: <b>Mở riêng</b> thiết kế → <b>Win+Shift+S</b>, lưu PNG.</li>' +
+            '<li>Canva → Apps → <b>Mockups</b> → <b>Create mockup</b> từ ảnh cảnh vừa tạo → kéo PNG thiết kế vào vùng trống → Tải xuống PNG → thả vào ô bên trái.</li></ol></details>' : '');
+        var fx = cam ? '' : '<details class="fixes"><summary>Ảnh gần đúng? Câu sửa nhanh</summary><ul>' + fixList(b, im).map(function (f) {
+            return '<li><span>' + esc(f[0]) + '</span>' + copyBtn(f[1], 'Copy') + (f[2] ? '<button class="btn tiny ghost" data-blank="' + esc(genRatio(im.ratio)) + '" title="Vẫn sai tỉ lệ: đính kèm khung trống này cuối cùng rồi gửi lại câu sửa">Khung trống ' + esc(genRatio(im.ratio)) + '</button>' : '') + '</li>';
+          }).join('') + '</ul></details>';
         return '<article class="task' + (u ? ' ok' : '') + '">' +
           '<div class="thumb drop" tabindex="0" title="Kéo thả ảnh vào đây · bấm rồi Ctrl+V · bấm đúp để chọn file" data-drop="' + esc(b.slug) + '|' + esc(im.id) + '" style="aspect-ratio:' + String(im.ratio || '1:1').replace(':', '/') + '">' +
           (u ? '<img src="' + u + '" alt="">' : '<span class="dz">⬇<br>Thả ảnh vào đây<br><small>hoặc bấm rồi Ctrl+V</small></span>') + '</div>' +
           '<div class="tbody"><div class="ttop"><h4>' + esc(im.title) + '</h4>' + (u ? '<span class="pill s-done">Đã có</span>' : '<span class="pill s-doing">Cần tạo</span>') + '</div>' +
-          '<p class="meta"><span>' + esc(im.group || '') + '</span><span>Tỉ lệ ' + esc(im.ratio || '1:1') + '</span>' + (im.tool === 'Camera' ? '<span>📱 Tự chụp</span>' : '<span>Nên tạo bằng: ' + esc(im.tool || 'Gemini') + (im.ai ? ' · nhớ gắn nhãn AI khi đăng' : '') + '</span>') + '</p>' +
-          (refs ? '<div class="refs"><small>Ảnh tham chiếu cần đính kèm:</small>' + refs + '</div>' : '') +
-          '<details><summary>' + (im.tool === 'Camera' ? 'Xem hướng dẫn chụp' : 'Xem prompt') + '</summary><pre>' + esc(promptText(b, im)) + '</pre></details>' +
-          '<div class="tact">' + copyBtn(promptText(b, im), im.tool === 'Camera' ? 'Copy hướng dẫn chụp' : 'Copy prompt', 'primary') + copyBtn(savePath(b.slug, im.id), 'Copy đường dẫn lưu') +
-          '<code class="fname">' + esc(im.id) + '.png</code></div></div></article>';
+          '<p class="meta"><span>' + esc(im.group || '') + '</span><span>Tỉ lệ ' + esc(im.ratio || '1:1') + '</span>' + tool + '</p>' +
+          (refs ? '<div class="refs"><small>' + (canva ? 'Cần dùng:' : 'Đính kèm theo đúng thứ tự:') + '</small>' + refs + '</div>' : '') + guide +
+          '<div class="tact">' + (canva ? '' : copyBtn(promptText(b, im), cam ? 'Copy hướng dẫn chụp' : 'Copy prompt', 'primary')) + copyBtn(savePath(b.slug, im.id), 'Copy đường dẫn lưu') +
+          '<code class="fname">' + esc(im.id) + '.png</code></div>' + fx + '</div></article>';
       }).join('') + '</div>';
     });
     return out;
@@ -953,7 +1062,7 @@
         '<span class="weight w-' + esc(s.weight || '') + '">' + esc(s.weight || '') + '</span></div>' +
         '<p>' + esc(s.desc) + '</p><dl class="sinfo"><dt>Bạn nhận được</dt><dd>' + esc(s.gets || '') + '</dd>' +
         '<dt>Câu lệnh</dt><dd>' + say(fill(s.say, b0)) + (s.approve ? '<br>' + say(fill(s.approve, b0)) : '') + '</dd>' +
-        '<dt>Model</dt><dd>' + esc(s.model || 'Sonnet') + '</dd><dt>Xem ở</dt><dd>' + esc(s.where || '') + '</dd>' +
+        '<dt>Model</dt><dd>' + esc(s.modelNote || s.model || 'Sonnet') + '</dd><dt>Xem ở</dt><dd>' + esc(s.where || '') + '</dd>' +
         '<dt>Xuất & portfolio</dt><dd>' + esc(s.exp || '') + '</dd>' + (s.tip ? '<dt>Mẹo</dt><dd>' + esc(s.tip) + '</dd>' : '') +
         (s.need ? '<dt>Đầu vào</dt><dd>' + esc(s.need.text) + ' (thư mục <code>brands/&lt;brand&gt;/' + esc(s.need.dir) + '</code>)</dd>' : '') + '</dl></article>';
     }).join('');
@@ -1013,7 +1122,7 @@
   window.addEventListener('resize', fitDocs);
   window.addEventListener('hashchange', function () { S.sel = null; render(); window.scrollTo(0, 0); });
   document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-copy],[data-png],[data-svg],[data-step],[data-print],[data-reload],[data-cdzip],[data-cdtoggle],[data-connect]');
+    var t = e.target.closest('[data-copy],[data-png],[data-svg],[data-step],[data-print],[data-reload],[data-cdzip],[data-cdtoggle],[data-connect],[data-blank]');
     if (!t) return;
     if (t.hasAttribute('data-copy')) { e.preventDefault(); copy(CLIP[+t.getAttribute('data-copy')], t.classList.contains('cdbtn') ? 'Đã copy prompt cho Claude Design 🎨' : null); }
     else if (t.hasAttribute('data-png') || t.hasAttribute('data-svg')) {
@@ -1027,6 +1136,7 @@
     else if (t.hasAttribute('data-connect')) ensureDir().then(function () { render(); toast('Đã cho phép lưu ảnh ✅'); }).catch(function () {});
     else if (t.hasAttribute('data-cdzip')) buildKitZip(t.getAttribute('data-cdzip'));
     else if (t.hasAttribute('data-reload')) location.reload();
+    else if (t.hasAttribute('data-blank')) blankCanvas(t.getAttribute('data-blank'));
   });
   window.addEventListener('message', function (e) {
     var d = e.data; if (!d || d.type !== 'ps-qa') return;

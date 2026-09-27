@@ -34,19 +34,19 @@ Otherwise, read `${CLAUDE_SKILL_DIR}/references/conventions.md`, `${CLAUDE_SKILL
 | `poster` | Bus-shelter poster | 1200x1800 |
 
    Photos: reuse `cp-hero` / `cp-hero-wide` through `data-img` if the campaign has them. Otherwise add `oh-hero` (1:1).
-2. **Mockup image tasks**, with `"style": "none"` (they are scene mockups, not brand photography):
+2. **Mockup image tasks**, with `"style": "none"` and `"composite": "Canva"` (scene mockups; the design goes in with Canva, not the AI):
 
 | Id | Ratio | What |
 |---|---|---|
 | `oh-billboard-mockup` | 16:9 | Daylight street scene with a blank billboard |
 | `oh-poster-mockup` | 4:5 | Bus shelter with a blank lit poster |
 
-   Each prompt says: "Place the attached billboard/poster design onto the blank board, keep it undistorted." The user attaches their PNG capture of the design.
+   Each prompt describes the scene with the board **blank, flat, evenly lit and facing the camera**, filling a clear part of the frame. No `refs`. The HUB tells the user to add the design PNG in Canva Mockups.
 3. **Write `ooh/step.js`:**
    - `summary`;
    - `outputs`: the visuals, plus a `copy` output "OOH copy & placement" (final line, placements and why, based on `brief.market`);
    - `images`.
 4. **Edit `brand.js`:**
    - the step → `review`;
-   - `next` → `{ "text": "Xem billboard & poster ở tab OOH. Để tạo mockup: Mở riêng thiết kế → Win+Shift+S chụp PNG → đính kèm vào Gemini. Ưng thì duyệt.", "say": "Duyệt OOH <Name>" }`.
+   - `next` → `{ "text": "Xem billboard & poster ở tab OOH. Để làm mockup: tạo cảnh billboard trống bằng Gemini, rồi ghép thiết kế trong Canva (hướng dẫn ở tab Ảnh cần tạo). Ưng thì duyệt.", "say": "Duyệt OOH <Name>" }`.
 5. **Verify, then reply** with the ending block.

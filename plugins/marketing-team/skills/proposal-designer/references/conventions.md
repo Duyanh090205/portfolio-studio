@@ -45,7 +45,7 @@ brands/<slug>/report/input/        CSV/XLSX exports the user drops in (optional)
 
 **`kit`** is read-only for everyone except brand-strategist. Its fields:
 - `essence` {positioning, personality, voice, keywords}
-- `colors` [{name, hex, role, use}]
+- `colors` [{name, hex, role, use}]. `role: "Variant"` entries are the fixed colours of product lines or flavours (`use` names the line). Use them for those lines and never invent new line colours.
 - `typography` {headline, body, accent}
 - `logo`, `illustration`, `photography` {direction, lighting, do, dont}
 - `graphicElements`, `social`, `packaging`, `applications`
@@ -160,16 +160,30 @@ The user makes these in Gemini or ChatGPT. The HUB adds a copy button and detect
 - **`id`:** kebab-case ASCII, unique in the brand, starting with the step code: `bs-` brand strategist (legacy ids without a prefix are fine), `sm-`, `cp-`, `pk-`, `oh-`, `vd-`, `ad-`.
 - **`step`:** must equal the step id exactly, or the task won't show.
 - **`ratio`:** equals the **slot** the photo fills in your HTML. See the slot table in html-guide.
-- **`prompt`:** one English paragraph, 50–100 words, covering subject, setting, composition, camera, lighting, colours by name, props and mood. Write the composition for the layout: for `l-photo`, put the subject in the upper half and keep the lower 45% calm. For panel layouts, let the subject fill the frame.
+- **`tool`:** `Gemini` (default), `ChatGPT` (the one hero shot that must reproduce a real product most faithfully, or a lineup of several products), `Canva` (the real logo on a flat item: tote, bag, card, box, sign) or `Camera` (the user's own photo).
+  - For `Canva`, `prompt` is a short description of the Canva mockup to pick, e.g. "a natural canvas tote bag with a plain front panel facing the camera", and `refs` holds the logo.
+  - Mockups that show one of your HTML designs (billboard, poster, pack front) keep `"tool": "Gemini"` (or `ChatGPT`) and add `"composite": "Canva"`: the AI makes the scene with a blank, flat, front-facing area, and the user drops the design PNG in with Canva. Never ask the AI to redraw a design.
+- **`prompt`:** the scene only, because the HUB adds the rest (intent and format, numbered reference roles, the brand style block, the branding line and the ratio).
+  - 50–90 words of full sentences, starting with the subject: setting, composition, camera, light, props, mood.
+  - Colours by name, tied to objects ("sage-green glass", "oat linen"). Never hex codes.
+  - Write the composition for the layout: for `l-photo`, put the subject in the upper half and say what fills the calm lower 45% ("the plain face of the plinth"). For panel layouts, let the subject fill the frame.
+  - Describe empty areas positively. Never use the words "headline" or "text" in a prompt.
+  - People: prefer hands, shoulders or backs. Phone and laptop screens face away from the camera.
+- **`refs`:** what the user attaches in Gemini. Each entry is one of:
+  - a logo id from logos.js;
+  - the id of another image task (e.g. an approved hero shot);
+  - a photo of the user's real product, as a path relative to the brand folder (`input/serum-front.png`).
 - **Never name the brand** in a prompt unless `refs` holds a logo. Say "an unbranded pastel pint tub".
-- With a logo ref, write "place the attached logo on …, flat, undistorted".
-- Don't write "no text"; the HUB appends the brand style block, which says it.
+- With a logo ref, write "print the attached logo large, flat and facing the camera on …". With a product-photo ref, write "exactly as in the attached product photo".
+- If the user's real product appears and `input/` has a photo of it, always add that photo to `refs`.
+- Don't write "no text" or "no watermark"; the HUB adds the branding line.
 - For mockups of a finished design (billboard, poster) and for pure illustration tasks, set `"style": "none"`. The HUB then won't append the photo style block.
 
 ## brand.css
 Brand-strategist writes it. Other roles create it only if it is missing, using kit values and one variable per colour role:
 - `--primary`, `--secondary`, `--accent`, `--accent-2`, `--light`, `--dark`
 - `--font-headline`, `--headline-weight`, `--font-body`, `--font-accent`
+- one `--v-<kebab-name>` per `Variant` colour
 
 ## Honesty (this is portfolio work)
 - **Label every claim with its source:**

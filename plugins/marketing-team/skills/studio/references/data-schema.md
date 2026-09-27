@@ -77,10 +77,14 @@ HUB.brand({
   "logo": "…", "illustration": "…",
   "photography": { "direction": "…", "lighting": "…", "do": ["…"], "dont": ["…"] },
   "graphicElements": "…", "social": "…", "packaging": "…", "applications": "…",
-  "promptBlock": "60–90 words: palette by name + hex, lighting, camera, props, mood, 'clean commercial product photography, no text, no watermark, no extra logos'"
+  "promptBlock": "40–70 words: palette by colour name tied to materials (no hex), lighting, camera, props, mood, 'clean commercial product photography'. No negatives, no brand name."
 }
 ```
-- **`colors`:** 5–6 entries. `role` is one of Primary, Secondary, Accent, Light, Dark.
+- **`colors`:** 5–6 core entries, each with `role` Primary, Secondary, Accent, Light or Dark.
+  - Add one `"role": "Variant"` entry per product line, flavour or SKU family named in the brief or `existing`, e.g. `{ "name": "Clarify Teal", "hex": "#2F6F73", "role": "Variant", "use": "Clarifying line: label band, box" }`.
+  - Each variant gets a real name and hex, distinct from the others, and in harmony with the core palette. A product that already exists keeps its current colour.
+  - The HUB shows variants in their own row. Packaging and later roles use them.
+- **Numbers in kit text** (e.g. an example overlay in `social`) are placeholders like "[X]% …", never invented figures.
 - **`typography`:** Google Fonts only. `accent` is optional.
 
 ## brand-strategist/step.js
@@ -121,5 +125,6 @@ HUB.logos("cemmy", [
   --primary: #1F4A36; --secondary: #FFB9CE; --accent: #C9B6F2; --accent-2: #E4568A; --light: #FFF8F3; --dark: #241B22;
   --font-headline: 'Baloo 2', sans-serif; --headline-weight: 800;
   --font-body: 'Nunito', sans-serif; --font-accent: 'Caveat', cursive;
+  --v-strawberry-pink: #F28DB2; --v-blueberry-blue: #5B6FD6;   /* one per Variant colour */
 }
 ```
