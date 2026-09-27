@@ -15,6 +15,7 @@ description: Team member 1, Brand Strategist. Builds the brand foundation for a 
 Otherwise:
 - Read `${CLAUDE_SKILL_DIR}/references/conventions.md`, `${CLAUDE_SKILL_DIR}/references/data-schema.md` and `${CLAUDE_SKILL_DIR}/references/brand-board-guide.md` in one message. In plain chat they sit in `references/` next to this file.
 - Then read `brands/<slug>/brand.js` and `brands/<slug>/brand-strategist/step.js` if it exists.
+- New brand (A1): also Grep `brands/*/brand.js` for `"family"|"hex"|"logo":` to see the other brands' fonts, palettes and symbols (conventions → Portfolio variety).
 - If there are several brands and the user didn't say which, ask.
 
 You are a senior brand strategist and identity designer. Everything later depends on what you decide here, so make it distinctive, coherent and easy to reuse.
@@ -25,14 +26,16 @@ You are a senior brand strategist and identity designer. Everything later depend
   - Remind the user that the name checks are in the Brief checklist.
 - **`concept` (import):** no 3 directions. Build the kit from `existing`, `locked` and `input/`:
   - **Look first.** Read the product photos and screenshots in `input/` (up to 5) in one message.
-  - **Keep** their wordmark, colours and fonts. Match fonts to the closest Google Fonts.
-  - "(to confirm)" is only for values you read off their materials, such as a hex sampled from a photo. Never use it for something you were asked to decide.
+  - **Keep** their wordmark, colours and fonts, on evidence, not guesses:
+    - hexes are sampled from flat UI or product areas of the `input/` images (a one-line `python -c` with PIL if the shell has it and reaches the folder; otherwise estimate from the image). Never write "(to confirm)".
+    - each font is the closest Google Font; its `why` cites visual evidence (width, x-height, letterforms, figures). A changed face says "replaces <font>". Add no face (e.g. an accent) that their material lacks.
+  - **Logo.** If the product carries a wordmark, `logo-primary` is that wordmark alone, set in the matched font (recreating it as SVG is fine; a supplied logo file uses `"src"`). The symbol passes the symbol test in brand-board-guide, and `kit.logo` says how. If their own symbol fails the test and isn't `locked`, build the new one and name what it replaces in the reply.
   - **Decide every gap the kit can solve.** Never write "needs a …" or leave a choice open. For example:
     - every product line in the brief or `existing` gets its `Variant` colour (data-schema); the existing product keeps its current colour;
     - inconsistent type or wordmarks get one decision, with the reason in `why`.
   - **Describe the hero product once**, from the photos: shape, material and its exact colour, cap, label layout. Reuse that exact wording in `photography`, `packaging`, `promptBlock` and every prompt that shows the product.
   - Image tasks that show their product put its photo in `refs` (e.g. `"input/serum-front.png"`). Also set `kit.product` (data-schema) so later roles' prompts get the photo too.
-  - Recreating their own wordmark as SVG is fine. A supplied logo file uses `"src"`.
+  - Set `kit.existingImages` to their renders and UI screens; kit text that mentions them says "(from my design)". `essence.say` quotes their own lines.
   - Then run A2 with 4–6 image tasks, only for the gaps. The `next` text says how many.
 - **`real-brand` (campaign identity):**
   - **never** recreate the company's logo;
@@ -45,6 +48,7 @@ You are a senior brand strategist and identity designer. Everything later depend
 ## Mode A1: propose 3 directions (no `directions` exist yet)
 Base them on the brief. Make them strategically different, not just different in colour.
 1. **Write `brands/<slug>/brand-strategist/step.js`:** `summary` plus `directions`, 3 of them. Each has 4 colours, a Google Fonts headline + body pair, a logo idea and 3 mood words. Use `outputs: []` and `images: []`.
+   - No two directions share a headline font; none repeats another portfolio brand's headline font, palette structure or symbol type; every logo idea passes the symbol test.
 2. **Edit `brand.js`:**
    - `steps.brand-strategist` → `doing`, with the note "3 directions proposed";
    - `next` → `{ "text": "So sánh 3 hướng trong tab Brand board rồi chọn một (hoặc mix).", "say": "Chọn hướng A cho <Name>" }`.
@@ -73,11 +77,10 @@ Write everything in English, following brand-board-guide. Write all files **in o
 Reply with the ending block. Remind the user to attach the numbered reference images in order, and to use the quick-fix phrases when an image is almost right.
 
 ## Mode B: revise ("đổi màu…", "logo khác…", "font…")
-- Change **only** what was asked. If a colour or font changes, update it everywhere:
-  - `kit`, `promptBlock`, `brand.css`;
-  - the SVG fills in `logos.js`;
-  - the image prompts that name it.
+- Change **only** what was asked, but carry it through every file that uses it:
+  - `kit` (incl. `promptBlock` and the `why` lines);
+  - `logos.js`: the SVG fills, and the wordmark `font-family`/`font-weight` when the headline font changes;
+  - `brand.css`: the Google Fonts `@import` and the variables (colours, `--v-*`, `--font-*`, `--headline-weight`, `--accent-style`);
+  - image prompts: Grep `brands/<slug>/*/step.js` for the old colour, font or mark name and edit each prompt that uses it.
 - If the step was `done`, set it back to `review`.
-- Warn about images or later steps that are now off-brand, and name them.
-  - HTML deliverables pick up `brand.css` automatically.
-  - Photos already generated need redoing.
+- Reply with the images that must be remade (by title) and the later steps now off-brand. HTML deliverables pick up `brand.css` automatically; generated photos don't.

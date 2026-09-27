@@ -28,16 +28,20 @@ Otherwise, read `${CLAUDE_SKILL_DIR}/references/conventions.md`, `${CLAUDE_SKILL
 ## Build
 1. **Plan the feed.** Choose 3 content pillars that serve `brief.audience` and `kit.essence`. Every post must support the brand's core idea, and none may contradict it. For example, a "made for two" brand never says "split three ways".
    - For `concept`, check every line against the user's own material in `input/` (how the system works, product names, timings) and never report outcomes as if they exist (conventions, Honesty).
-   - If `input/` has screens of the product's app or system, show one in the set with `data-img="input/…"`: it proves the idea better than any claim.
+   - **Proof post** (`concept`/`live` with app or system screens in `input/`): `post-awareness` becomes it. `l-card` with `<img data-img="input/<screen>.png" class="photo" alt="" style="transform:scale(1.2)">` (the scale hides the phone bezel); the headline carries the hook; its `note` and caption say "Prototype screen; sample entries." No `sm-awareness` task.
 2. **Write these 5 visuals in one batch.** Each is a small HTML file using the layout kit, with exactly one logo.
 
 | Output id | Title | Size | Layout | Purpose |
 |---|---|---|---|---|
-| `post-launch` | Launch post | 1080x1350 | `l-photo` | Product launch or hero announcement |
+| `post-launch` | Launch post | 1080x1350 | `l-photo` (`.on-light` when the calm area is a plain pale surface) | Product launch or hero announcement |
 | `post-promo` | Promo post | 1080x1350 | `l-split` + `badge round` with the offer | A clear offer that fits the brand, e.g. a bundle, second-item deal or free topping |
-| `post-awareness` | Brand personality post | 1080x1350 | `l-card` | Mascot, value or ritual |
+| `post-awareness` | Brand personality post | 1080x1350 | `l-card` | Mascot, value or ritual; or the proof post |
 | `post-seasonal` | Seasonal post | 1080x1350 | `l-type` | A seasonal or cultural moment for the audience's market |
 | `story-launch` | Launch story | 1080x1920 | `l-photo` | Story version. No CTA pill (the user adds a link sticker in the app); write the sticker text in `note` |
+
+   - **CTA:** only `post-promo` has a `.cta`. Launch, awareness and seasonal carry no pill; the action lives in the caption.
+   - **Variety** (conventions → Craft bar): at most 2 of the 5 use kicker + headline + sub; `post-seasonal` is headline-only; in one (the proof post, else launch) the photo or screen carries the idea.
+   - The promo badge keeps the kit's accent colour (the `.badge` default); never recolour it.
 
 3. **Image tasks:** one photo per visual unless an existing photo fits (reuse first, see conventions), with ids `sm-launch`, `sm-promo`, `sm-awareness`, `sm-seasonal` and `sm-story`. Set each `ratio` from the html-guide slot table:
    - launch 4:5;
@@ -47,10 +51,11 @@ Otherwise, read `${CLAUDE_SKILL_DIR}/references/conventions.md`, `${CLAUDE_SKILL
    - story 9:16.
 
    Write each composition for its layout.
+   - `post-launch` points at the kit's feed photo (`bs-social-1`, `bs-social-style` or similar) when it exists and suits the layout; add `sm-launch` only otherwise.
 4. **Write `social-media/step.js`:**
    - `summary`: the pillars and how the feed stays consistent;
-   - `outputs`: the 5 visuals, each with `title` and `copy`, plus a `copy` output "Captions & hashtags" with two items per post:
-     - `"<Title>"`: 2–4 short lines in brand voice, ending "Link in bio." (captions can't hold tappable arrows), then at most 5 relevant hashtags (no generic hype tags, none owned by other brands);
+   - `outputs`: the 5 visuals, each with `title`, `copy` and `why`, plus a `copy` output "Captions & hashtags" with two items per post:
+     - `"<Title>"`: 2–4 short lines in brand voice, ending "Link in bio." (captions can't hold tappable arrows), then at most 5 relevant hashtags (no generic hype tags, none owned by other brands). The proof post's caption also says "Prototype screen; sample entries.";
      - `"<Title> · alt text"`: "Text: <the on-image text>." then what the photo actually shows.
      - The story item holds only the link-sticker text, with no hashtags.
    - `images`: the 5 photo tasks.

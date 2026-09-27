@@ -84,15 +84,19 @@ The placeholder in each design shows the real slot size, e.g. "📷 sm-promo · 
 
 ## Documents (proposal, reports, analysis)
 Documents don't use `.frame`. Link `../brand.css` and `compose.js`; logos and images still work.
+- **Logos in documents** flow with the text: `<div class="logo inline" data-logo="logo-primary" style="width:240px;height:96px"></div>`, never absolutely placed over a title.
+- **Numbering:** "01 — The Problem" (em dash), matching the user's pages.
 - **Screen:** a readable width of around 1200px, numbered sections ("01: The Problem"), generous white space, and brand tints (`color-mix(in srgb, var(--primary) 8%, white)`) instead of greys. Keep responsive rules inside `@media screen and (max-width: …)`.
 - **Slides** (1600×900): `.slide { width:1600px; height:900px; display:flex; flex-direction:column; justify-content:center; break-after:page }` with `@page { size: 1600px 900px; margin: 0 }`.
 - **Long documents:** `@page { size: A4; margin: 12mm }`, sections use `break-inside: avoid` (not `break-after: page`), and add `addEventListener('beforeprint', () => Object.values(Chart.instances || {}).forEach(c => c.resize()))`.
-- **Embedding another step's visual:**
+- **Embedding another step's visual:** the `.embed` box's width and height equal the iframe size × scale exactly. Scale ≥ .3 for 1080-wide posts and ≥ .45 for 1920-wide banners; at most 4 embeds per slide.
   ```html
   <div class="embed" style="width:540px;height:675px;overflow:hidden"><iframe src="../social-media/post-launch.html" style="width:1080px;height:1350px;border:0;transform:scale(.5);transform-origin:0 0"></iframe></div>
   ```
 - **Mockup photos:** use `<img data-img="oh-billboard-mockup">`. They show once generated.
 - **Typography:** typographic apostrophes and quotes (’ “ ”). Follow the case style of the user's own materials; otherwise use sentence case for headlines.
+- **Components:** `<div class="qr" data-qr="URL"></div>` draws a real, scannable QR; `.qr-row` puts it beside one short line. `.proof-card` (with `.meta` and a `blockquote`) shows one check-in, quote or number with its n=. `l-photo.on-light` drops the scrim and uses dark copy when the calm area is a plain pale surface.
+- **Artwork hygiene:** source labels and production notes go in `note`, never on the artwork. Print pieces have no CTA pill or "→"; use a QR + verb. An SMS opt-in states how often and "Reply STOP anytime".
 - **The user's own photos:** `<img data-img="input/back-label.png">` (a path relative to the brand folder) shows that file as is. Use it instead of an image task whenever `input/` already has the right shot.
 
 ### Chart.js rules

@@ -24,25 +24,37 @@ Read `${CLAUDE_SKILL_DIR}/references/conventions.md`, `${CLAUDE_SKILL_DIR}/refer
    - logo files (PNG/SVG), fonts and hex colours if known;
    - survey or analytics exports.
 
-   Create that folder first, with a `.keep` file. If they give a URL, fetch it (WebFetch) instead of asking for text.
+   Create that folder first, with a `.keep` file. If they give a URL, fetch it (WebFetch, asking for the full page text verbatim, with headings, alt texts and links) instead of asking for text, and save the page text as `input/page.txt` so Proposal and the project check can build on it.
 3. **For group work:** which parts were theirs and which were the team's.
 4. **Anything that must not change** (locked), e.g. the name, the wordmark or the key numbers.
 
 ## 2. Read the materials (one batch of parallel reads)
-Read the PDFs, text and screenshots. Look at at most 8 images, since images cost many tokens; ask which ones matter if there are more. Take the facts from **their** materials.
+Read the PDFs, text and screenshots. Look at at most 8 images, since images cost many tokens; ask which ones matter if there are more. Take the facts from **their** materials (see conventions, Ground everything).
+
+**Follow the study links.** If the page text or files link to the full research ("Read the full study", a Google Drive or Docs link), fetch it and save its text as `input/research-<name>.txt`:
+- Google Drive file: download `https://drive.google.com/uc?export=download&id=<ID>` with the shell (`curl -L … -o`, or Python `urllib`) into `input/`;
+- Google Docs: `https://docs.google.com/document/d/<ID>/export?format=txt`;
+- `.docx`: extract the text with any available tool, or Python: `zipfile.ZipFile(f).read('word/document.xml')`, turn `</w:p>` into line breaks, strip the other tags with a regex;
+- PDF: Read it directly.
+If the link needs a sign-in, ask the user to download the file into `input/`.
 
 ## 3. Write `brands/<slug>/brand.js` (template: data-schema)
 - **`projectType`:** as chosen.
 - **`name`, `category`, `oneLiner`, `tagline`** from their materials.
-- **`brief`:** product/subject, audience, market, problem, personality, competitors, mustHave. Label facts "(from my research)" or "(<source>, <year>)", and label your own additions "(assumed)".
+- **`brief`:** product/subject, audience, market, problem, personality, competitors, mustHave. Name the theory or model their insight rests on in `problem` or `audience`. Put their English variant and headline case in `mustHave` (e.g. "US English; Title Case headlines").
+- **Labels** (conventions, Honesty): findings and cited stats from their study "(from my research)", or "(my research proposal)" if it was never run; their renders, UI and copy "(from my design)"; anecdotes "(founder story)"; public stats "(<source>, <year>)"; your own additions "(assumed)".
 - **`existing`, `gaps`, `locked`, `sources`, `role`:** fill these from what you read.
-  - Gaps are what a hiring manager would miss. Examples: no identity system, only 1 of 10 products shown, no launch plan or KPIs, no data visuals, no disclaimer.
+  - `sources`: first the study itself (`note`: method, n, audience, and whether it was run), then **every stat it cites**, one entry each, titled "Author, Year" with the stat in `note`. The project page URL goes in too.
+  - `existing`: each piece with its label, including the theory names and any plan or number (beta-tester count, modeled rate) that later roles must not contradict.
+  - `role`: always fill `mine` (printed as "My role: …"); add `team` for group work.
+  - Gaps are what a hiring manager would miss. Examples: no identity system, only 1 of 10 products shown, no launch plan or KPIs, no data visuals, no disclaimer, no role or AI-use line.
   - Also note hygiene issues you noticed (numbering, typos, contradictions) as gaps starting "Fix:".
 - **`disclaimer`:**
   - `real-brand`: "Unsolicited concept. Not affiliated with or endorsed by <Owner>. Trademarks belong to their owners."
   - `cause`: "Concept extension, not commissioned by <Client>." (only for new work beyond what was delivered).
 - **`kit`:**
   - If the materials show colours, fonts or a logo, write a starter kit with those values. Mark unknowns "(to confirm)".
+  - Their renders and UI screens in `input/` go in `kit.existingImages` when you write a kit; otherwise list them in `existing` with their paths.
   - Brand-strategist completes it in import mode.
   - For `real-brand`, describe the master brand in words only.
 - **`steps`:**

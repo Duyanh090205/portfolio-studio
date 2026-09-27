@@ -34,7 +34,8 @@ body { margin: 0; }
 .badge.left { right: auto; left: 6cqw; transform: rotate(6deg); }
 
 /* ---------- logo (compose.js aligns the SVG to the side it sits on) ---------- */
-.logo { position: absolute; z-index: 5; width: 22cqw; height: 10cqw; }
+.logo { display: block; width: 240px; height: 96px; }   /* documents: logos flow with the text */
+.frame .logo { position: absolute; z-index: 5; width: 22cqw; height: 10cqw; }   /* fixed-size visuals: placed by tl/tr/bl/br/bc */
 .logo.tl { top: 6cqw; left: 6cqw; } .logo.tr { top: 6cqw; right: 6cqw; }
 .logo.bl { bottom: 6cqw; left: 6cqw; } .logo.br { bottom: 6cqw; right: 6cqw; }
 .logo.bc { bottom: 6cqw; left: 50%; transform: translateX(-50%); }
@@ -122,7 +123,7 @@ body { margin: 0; }
   .l-hero .headline, .l-split .headline { font-size: 5.2cqw; } .l-hero .headline.xl, .l-split .headline.xl { font-size: 6.2cqw; }
   .l-ooh .headline { font-size: 6.4cqw; }
   .sub { font-size: 1.9cqw; } .kicker { font-size: 2.4cqw; } .cta { font-size: 1.8cqw; padding: 1.1cqw 2.6cqw; margin-top: 2.4cqw; }
-  .logo { width: 13cqw; height: 6cqw; } .logo.lg { width: 20cqw; height: 9cqw; } .logo.sm { width: 9cqw; height: 4cqw; }
+  .frame .logo { width: 13cqw; height: 6cqw; } .logo.lg { width: 20cqw; height: 9cqw; } .logo.sm { width: 9cqw; height: 4cqw; }
   .l-ooh .logo { width: 22cqw; height: 9cqw; }
   .logo.tl, .logo.tr { top: 4cqw; } .logo.tl, .logo.bl { left: 4cqw; } .logo.tr, .logo.br { right: 4cqw; } .logo.bl, .logo.br, .logo.bc { bottom: 4cqw; }
   .badge { font-size: 1.8cqw; padding: 1cqw 2cqw; top: 4cqw; right: 4cqw; } .badge.round { width: 12cqw; height: 12cqw; }
@@ -162,3 +163,15 @@ body { margin: 0; }
 .l-type:has(> .badge) .photo-layer, .l-type:has(> .logo.bc) .photo-layer { width: min(28cqw, 20cqh); height: min(28cqw, 20cqh); }
 .l-type:has(> .badge):has(> .logo.bc) { gap: 3cqw; }
 @container (aspect-ratio > 1.2) { .l-type:has(> .badge) { padding-top: 8cqh; } .l-type:has(> .badge) .copy { padding-right: 16cqw; } }
+
+/* v0.5: light photos keep their colour: no scrim, dark copy (use when the calm area is a plain pale surface) */
+.l-photo.on-light .scrim { display: none; }
+.l-photo.on-light .copy { color: var(--dark); }
+.l-photo.on-light .cta { background: var(--dark); color: var(--light); }
+/* v0.5: scannable QR block (compose.js draws it from data-qr) and a proof card for check-ins, quotes, n= */
+.qr { width: 18cqw; height: 18cqw; padding: 1.4cqw; background: #fff; border-radius: 1.2cqw; flex: none; }
+.qr-row { display: flex; align-items: center; gap: 3cqw; margin-top: 3cqw; }
+.qr-row p { margin: 0; font-size: 3cqw; line-height: 1.25; max-width: 40cqw; }
+.proof-card { background: var(--light); color: var(--dark); border-radius: 2.4cqw; padding: 4cqw; box-shadow: 0 1cqw 4cqw rgba(0,0,0,.12); max-width: 70cqw; }
+.proof-card .meta { font-size: 2.6cqw; opacity: .75; margin: 0 0 1.6cqw; }
+.proof-card blockquote { margin: 0; font-family: var(--font-accent, var(--font-body)); font-style: var(--accent-style, normal); font-size: 5cqw; line-height: 1.15; }

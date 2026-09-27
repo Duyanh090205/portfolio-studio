@@ -103,6 +103,7 @@
     });
   }
   // A CTA or badge whose text barely differs from its fill is unreadable: recolour it with the brand's light/dark pair.
+  function hexToRgb(h) { h = String(h || '').trim(); var m = /^#?([0-9a-f]{6})$/i.exec(h); if (!m) return h; var n = parseInt(m[1], 16); return 'rgb(' + (n >> 16) + ', ' + ((n >> 8) & 255) + ', ' + (n & 255) + ')'; }
   function rgb(s) { var m = /rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)/.exec(s || ''); return m ? [+m[1], +m[2], +m[3]] : null; }
   function lum(c) { c = c.map(function (v) { v = v / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
   function ratio(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
@@ -110,6 +111,9 @@
     Array.prototype.forEach.call(document.querySelectorAll('.cta, .badge'), function (el) {
       var cs = getComputedStyle(el), fg = rgb(cs.color), bg = rgb(cs.backgroundColor);
       if (!fg || !bg || /rgba\([^)]*,\s*0\)/.test(cs.backgroundColor) || ratio(fg, bg) >= 3) return;
+      var root = getComputedStyle(document.documentElement), best = null;
+      ['--dark', '--light'].forEach(function (v) { var c = rgb(hexToRgb(root.getPropertyValue(v))); if (c && ratio(c, bg) >= 3 && (!best || ratio(c, bg) > best.r)) best = { v: v, r: ratio(c, bg) }; });
+      if (best) { el.style.color = 'var(' + best.v + ')'; return; } // keep the fill (e.g. the kit's promo accent), fix only the text
       var around = bgLum(el), dark = around !== null && around > 0.4; // light surroundings get a dark button, dark or photo ones a light button
       el.style.background = dark ? 'var(--dark)' : 'var(--light)'; el.style.color = dark ? 'var(--light)' : 'var(--dark)';
     });
@@ -119,7 +123,11 @@
     Array.prototype.forEach.call(frame.querySelectorAll('.panel, .copy'), function (z) { // any real text line clipped by its zone?
       var zr = z.getBoundingClientRect();
       // a clipping zone whose content is taller than the zone hides whatever sits at its end (a CTA, a nested logo)
-      if (getComputedStyle(z).overflowY !== 'visible' && z.scrollHeight > z.clientHeight + 4) out.push('nội dung bị cắt');
+      if (getComputedStyle(z).overflowY !== 'visible') {
+        var low = -Infinity; // bottom of the in-flow content only (a corner badge or logo placed absolutely is not "content")
+        Array.prototype.forEach.call(z.children, function (c) { var p = getComputedStyle(c).position; if (p !== 'absolute' && p !== 'fixed') low = Math.max(low, c.getBoundingClientRect().bottom); });
+        if (low > zr.bottom + 2) out.push('nội dung bị cắt');
+      }
       Array.prototype.forEach.call(z.querySelectorAll('.headline, .sub, .kicker, .cta'), function (t) {
         var cta = t.classList.contains('cta'), tol = cta ? 2 : parseFloat(getComputedStyle(t).fontSize) * 0.3; // text boxes are taller than the ink; a CTA pill is not
         (cta ? [t.getBoundingClientRect()] : textRects(t)).forEach(function (r) {
@@ -190,6 +198,33 @@
       }
     });
   }
+  // A headline made of two or more sentences gets one line per sentence, unless the author placed <br> already.
+  function breakSentences() {
+    Array.prototype.forEach.call(document.querySelectorAll('.headline'), function (h) {
+      if (h.querySelector('br') || h.children.length) return;
+      var t = h.textContent.trim(), parts = t.split(/(?<=[.?!])\s+(?=[A-Z0-9“"‘'])/);
+      if (parts.length < 2 || parts.length > 3) return;
+      h.innerHTML = parts.map(function (p) { return p.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }).join('<br>');
+    });
+  }
+  // Real, scannable QR codes: <div class="qr" data-qr="https://…"></div> (qrcode-generator from jsDelivr; a plain box offline).
+  function renderQRs() {
+    var els = document.querySelectorAll('[data-qr]'); if (!els.length) return Promise.resolve();
+    return new Promise(function (done) {
+      function draw() {
+        Array.prototype.forEach.call(els, function (el) {
+          try { var q = window.qrcode(0, 'M'); q.addData(el.getAttribute('data-qr') || 'https://example.com'); q.make();
+            el.innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); var svg = el.querySelector('svg'); if (svg) { svg.setAttribute('width', '100%'); svg.setAttribute('height', '100%'); }
+          } catch (e) {}
+        });
+        done();
+      }
+      if (window.qrcode) return draw();
+      var s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
+      s.onload = draw; s.onerror = function () { done(); }; document.head.appendChild(s);
+      setTimeout(done, 4000);
+    });
+  }
   // Headlines never break inside a hyphenated word ("check-/ins"): keep each such word on one line.
   function keepHyphenatedWords() {
     Array.prototype.forEach.call(document.querySelectorAll('.headline'), function (h) {
@@ -205,7 +240,7 @@
   }
 
   function run() {
-    smartQuotes(); keepHyphenatedWords();
+    smartQuotes(); breakSentences(); keepHyphenatedWords();
     var logoReady = new Promise(function (done) {
       var s = document.createElement('script');
       s.src = '../logos.js?v=' + Date.now();
@@ -213,9 +248,9 @@
       document.head.appendChild(s);
     });
     var fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
-    Promise.all([logoReady, loadImages(), fontsReady]).then(function () {
-      var frame = document.querySelector('.frame'), issues = [];
-      if (frame) { issues = report(fit(frame)); if (!inFrame) standalone(frame, issues); }
+    Promise.all([logoReady, loadImages(), fontsReady, renderQRs()]).then(function () {
+      var frame = document.querySelector('.frame'), issues = [], shot = /[?&]shot\b/.test(location.search); // ?shot = clean capture for visual review
+      if (frame) { issues = report(fit(frame)); if (!inFrame && !shot) standalone(frame, issues); }
       else if (!inFrame) {
         var st = document.createElement('style'); st.textContent = 'html{-webkit-print-color-adjust:exact;print-color-adjust:exact}'; document.head.appendChild(st);
       }

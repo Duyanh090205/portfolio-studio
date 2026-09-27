@@ -67,7 +67,9 @@ HUB.brand({
 ## kit (written by brand-strategist)
 ```json
 "kit": {
-  "essence": { "positioning": "For …, X is the … that …, because …", "personality": ["…"], "voice": "…", "keywords": ["…"] },
+  "essence": { "positioning": "For …, X is the … that …, because …", "personality": ["…"], "voice": "…", "keywords": ["…"],
+               "say": ["An on-voice example line"], "never": ["An off-voice line to avoid"] },
+  "existingImages": ["input/serum-front.png", "input/app-screen.png"],
   "colors": [ { "name": "Pistachio Deep", "hex": "#1F4A36", "role": "Primary", "use": "Logo, headlines" } ],
   "typography": {
     "headline": { "family": "Baloo 2", "weight": 800, "style": "normal", "why": "…" },
@@ -87,6 +89,8 @@ HUB.brand({
 - **`product`** (only when `input/` has a photo of the user's real product): `{ "photo": "input/serum-front.png", "words": ["bottle", "dropper", "serum"] }`. `words` are the nouns prompts use for it. The HUB attaches the photo to every photo prompt that uses one of them.
 - **Numbers in kit text** (e.g. an example overlay in `social`) are placeholders like "[X]% …", never invented figures.
 - **`typography`:** Google Fonts only. `accent` is optional.
+- **`existingImages`** (concept/live imports): the user's own renders and UI screens in `input/`. The HUB shows them first on the board as "Existing work (my design)".
+- **`sources`** (in brand.js, written at import): the user's research and every stat it cites, e.g. `{ "title": "Jensen, 2025", "url": "", "note": "Only 24% of U.S. beauty buyers think a higher price means better quality" }`, plus the study itself (method, n, whether it was run).
 
 ## brand-strategist/step.js
 ```js

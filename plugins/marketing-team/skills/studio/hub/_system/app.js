@@ -128,7 +128,7 @@
     });
     return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
   }
-  function onColor(hex) { return lum(hex) > 0.4 ? '#1f1b16' : '#ffffff'; }
+  function onColor(hex) { return lum(hex) > 0.179 ? '#1f1b16' : '#ffffff'; } // the WCAG crossover: pick the text colour with more contrast
   function font(b, role) {
     var t = (b.kit && b.kit.typography && b.kit.typography[role]) || null;
     return t && t.family ? "'" + t.family + "', " : '';
@@ -458,7 +458,7 @@
   function cdPanel(b) {
     if (!S.cd) return '';
     return '<div class="cdpanel"><div class="cdhead"><h3>🎨 Mang ' + esc(b.name) + ' sang Claude Design</h3><button class="btn tiny ghost" data-cdtoggle>Đóng</button></div>' +
-      '<p class="muted small">Claude Design là công cụ thiết kế của Claude (claude.ai/design): sửa trực tiếp bằng chuột, xuất PDF/PPTX/Canva. <b>Nó không tạo ảnh chụp</b>, ảnh vẫn tạo bằng Gemini/ChatGPT. Nó tốn nhiều lượt dùng, nên chỉ dùng cho 2–3 tác phẩm chủ lực.</p>' +
+      '<p class="muted small">Claude Design là công cụ thiết kế của Claude (claude.ai/design): sửa trực tiếp bằng chuột, xuất PDF/PPTX/Canva. <b>Nó không tạo ảnh chụp</b>, ảnh vẫn tạo bằng Gemini/ChatGPT. Nó dùng chung hạn mức với Claude Pro và tốn nhiều lượt, nên chỉ dùng cho 2–3 tác phẩm chủ lực. Bản gốc vẫn là thư mục Portfolio Studio trên máy; dự án trong Claude Design có thể không mở được khi hết gói.</p>' +
       '<ol class="cdsteps">' +
       '<li><b>Tải bộ brand kit</b> (logo PNG/SVG + DESIGN.md + prompt).<br><button class="btn primary" data-cdzip="' + esc(b.slug) + '">⬇ Tải brand kit (.zip)</button> <button class="btn" data-print>🖨 Xuất brand board PDF (tuỳ chọn)</button></li>' +
       '<li><b>Mở <a href="https://claude.ai/design" target="_blank" rel="noopener">claude.ai/design</a></b> → tạo <b>design system</b> mới → tải lên các file vừa giải nén (và PDF nếu có).</li>' +
@@ -771,7 +771,11 @@
     }
     var logos = (S.logos[b.slug] || []).filter(function (l) { return (l.kind || 'logo') === 'logo'; });
     var els = (S.logos[b.slug] || []).filter(function (l) { return l.kind === 'element'; });
-    var out = '<div class="board-actions"><button class="btn" data-cdtoggle>🎨 Mang sang Claude Design</button><button class="btn" data-print>🖨 Xuất PDF brand board</button></div>' + cdPanel(b) + '<div class="board">';
+    var mine = (k.existingImages || []).filter(Boolean);
+    var existing = mine.length ? section('Existing work (my design)', '<div class="slots">' + mine.map(function (p) {
+      return '<figure class="slot"><img src="brands/' + esc(b.slug) + '/' + esc(p) + '" alt="" style="width:100%;border-radius:10px;background:#fff"><figcaption class="muted small">' + esc(p.split('/').pop()) + '</figcaption></figure>';
+    }).join('') + '</div>', 'span2') : '';
+    var out = '<div class="board-actions"><button class="btn" data-cdtoggle>🎨 Mang sang Claude Design</button><button class="btn" data-print>🖨 Xuất PDF brand board</button></div>' + cdPanel(b) + '<div class="board">' + existing;
     if (logos.length) {
       out += section('Main logo', logoCard(b, logos[0], true) + (k.logo ? '<p class="muted">' + esc(k.logo) + '</p>' : ''), 'span2');
       if (logos.length > 1) out += section('Logo variations', '<div class="logos">' + logos.slice(1).map(function (l) { return logoCard(b, l); }).join('') + '</div>');
@@ -799,9 +803,11 @@
     }
     if (k.essence) {
       var e = k.essence;
+      var voice = (e.say && e.say.length) || (e.never && e.never.length) ? '<div class="dodont"><div><h5>Say</h5><ul>' + (e.say || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' +
+        '<div><h5>Never</h5><ul>' + (e.never || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div>' : '';
       out += section('Brand essence', para('Positioning', e.positioning) +
         (e.personality ? '<div class="chips">' + e.personality.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('') + '</div>' : '') +
-        para('Voice', e.voice) + (e.keywords ? '<p class="muted small">Keywords: ' + e.keywords.map(esc).join(' · ') + '</p>' : ''));
+        para('Voice', e.voice) + voice + (e.keywords ? '<p class="muted small">Keywords: ' + e.keywords.map(esc).join(' · ') + '</p>' : ''));
     }
     var groups = {}, order = [];
     allImages(b).filter(function (im) { return im.step === 'brand-strategist'; }).forEach(function (im) {
@@ -860,6 +866,12 @@
         html: '<a class="ref" href="' + esc(path) + '" target="_blank" rel="noopener" title="Chuột phải ảnh → Sao chép hình ảnh → Ctrl+V vào Gemini">' + num + '<img class="mini" src="' + esc(path) + '" alt="">' + esc(f) + '</a>' };
     }
     return { kind: 'none', n: n, name: id, role: '', html: '' };
+  }
+  // The title of the design a composite mockup shows (its output id is in im.design).
+  function designTitle(b, id) {
+    if (!id) return ''; var st = S.steps[b.slug] || {}, t = '';
+    Object.keys(st).forEach(function (k) { ((st[k] && st[k].outputs) || []).forEach(function (o) { if (o.id === id) t = o.title || id; }); });
+    return t;
   }
   function refsOf(b, im) {
     var ids = (im.refs || []).slice(), pr = (b.kit && b.kit.product) || {};
@@ -961,7 +973,7 @@
           '<details><summary>' + (cam ? 'Xem hướng dẫn chụp' : 'Xem prompt') + '</summary><pre>' + esc(promptText(b, im)) + '</pre></details>' +
           (im.composite ? '<details><summary>Ghép thiết kế trong Canva</summary><ol class="small">' +
             '<li>Tạo ảnh cảnh bằng prompt này: vùng bảng/nhãn sẽ để trống.</li>' +
-            '<li>Chụp thiết kế: <b>Mở riêng</b> thiết kế → <b>Win+Shift+S</b>, lưu PNG.</li>' +
+            '<li>Chụp thiết kế' + (designTitle(b, im.design) ? ' <b>“' + esc(designTitle(b, im.design)) + '”</b>' : '') + ': <b>Mở riêng</b> thiết kế đó → <b>Win+Shift+S</b>, lưu PNG.</li>' +
             '<li>Canva → Apps → <b>Mockups</b> → <b>Create mockup</b> từ ảnh cảnh vừa tạo → kéo PNG thiết kế vào vùng trống → Tải xuống PNG → thả vào ô bên trái.</li></ol></details>' : '');
         var fx = cam ? '' : '<details class="fixes"><summary>Ảnh gần đúng? Câu sửa nhanh</summary><ul>' + fixList(b, im).map(function (f) {
             return '<li><span>' + esc(f[0]) + '</span>' + copyBtn(f[1], 'Copy') + (f[2] ? '<button class="btn tiny ghost" data-blank="' + esc(genRatio(im.ratio)) + '" title="Vẫn sai tỉ lệ: đính kèm khung trống này cuối cùng rồi gửi lại câu sửa">Khung trống ' + esc(genRatio(im.ratio)) + '</button>' : '') + '</li>';
