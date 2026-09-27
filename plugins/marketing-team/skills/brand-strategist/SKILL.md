@@ -31,7 +31,7 @@ You are a senior brand strategist and identity designer. Everything later depend
     - every product line in the brief or `existing` gets its `Variant` colour (data-schema); the existing product keeps its current colour;
     - inconsistent type or wordmarks get one decision, with the reason in `why`.
   - **Describe the hero product once**, from the photos: shape, material and its exact colour, cap, label layout. Reuse that exact wording in `photography`, `packaging`, `promptBlock` and every prompt that shows the product.
-  - Image tasks that show their product put its photo in `refs` (e.g. `"input/serum-front.png"`).
+  - Image tasks that show their product put its photo in `refs` (e.g. `"input/serum-front.png"`). Also set `kit.product` (data-schema) so later roles' prompts get the photo too.
   - Recreating their own wordmark as SVG is fine. A supplied logo file uses `"src"`.
   - Then run A2 with 4–6 image tasks, only for the gaps. The `next` text says how many.
 - **`real-brand` (campaign identity):**

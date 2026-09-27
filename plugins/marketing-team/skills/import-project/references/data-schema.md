@@ -84,6 +84,7 @@ HUB.brand({
   - Add one `"role": "Variant"` entry per product line, flavour or SKU family named in the brief or `existing`, e.g. `{ "name": "Clarify Teal", "hex": "#2F6F73", "role": "Variant", "use": "Clarifying line: label band, box" }`.
   - Each variant gets a real name and hex, distinct from the others, and in harmony with the core palette. A product that already exists keeps its current colour.
   - The HUB shows variants in their own row. Packaging and later roles use them.
+- **`product`** (only when `input/` has a photo of the user's real product): `{ "photo": "input/serum-front.png", "words": ["bottle", "dropper", "serum"] }`. `words` are the nouns prompts use for it. The HUB attaches the photo to every photo prompt that uses one of them.
 - **Numbers in kit text** (e.g. an example overlay in `social`) are placeholders like "[X]% …", never invented figures.
 - **`typography`:** Google Fonts only. `accent` is optional.
 

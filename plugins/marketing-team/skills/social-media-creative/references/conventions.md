@@ -175,7 +175,7 @@ The user makes these in Gemini or ChatGPT. The HUB adds a copy button and detect
   - a photo of the user's real product, as a path relative to the brand folder (`input/serum-front.png`).
 - **Never name the brand** in a prompt unless `refs` holds a logo. Say "an unbranded pastel pint tub".
 - With a logo ref, write "print the attached logo large, flat and facing the camera on …". With a product-photo ref, write "exactly as in the attached product photo".
-- If the user's real product appears and `input/` has a photo of it, always add that photo to `refs`.
+- If the user's real product appears and `input/` has a photo of it, always add that photo to `refs`. When `kit.product` is set, the HUB also attaches `kit.product.photo` to any photo prompt that uses one of `kit.product.words`.
 - Don't write "no text" or "no watermark"; the HUB adds the branding line.
 - For mockups of a finished design (billboard, poster) and for pure illustration tasks, set `"style": "none"`. The HUB then won't append the photo style block.
 

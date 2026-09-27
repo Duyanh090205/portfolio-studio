@@ -3,7 +3,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '0.4.2';
+  var VERSION = '0.4.3';
   var S = { portfolio: null, brands: {}, logos: {}, steps: {}, errors: [], img: {}, sel: null, cd: false, qa: {}, dir: null, dirOk: false };
 
   window.HUB = {
@@ -862,7 +862,11 @@
     return { kind: 'none', n: n, name: id, role: '', html: '' };
   }
   function refsOf(b, im) {
-    return (im.refs || []).map(function (id, i) { return refOf(b, id, i + 1); }).filter(function (r) { return r.kind !== 'none'; });
+    var ids = (im.refs || []).slice(), pr = (b.kit && b.kit.product) || {};
+    // Safety net: a photo task that shows the real product always gets its photo, even if the role forgot to list it.
+    if (pr.photo && ids.indexOf(pr.photo) < 0 && im.tool !== 'Camera' && im.tool !== 'Canva' && !im.composite && im.style !== 'none' &&
+        (pr.words || []).some(function (w) { return new RegExp('\\b' + w + '\\b', 'i').test(im.prompt || ''); })) ids.push(pr.photo);
+    return ids.map(function (id, i) { return refOf(b, id, i + 1); }).filter(function (r) { return r.kind !== 'none'; });
   }
   // Gemini only makes these ratios; ask for the nearest one and let the slot crop the small difference.
   var GEN_RATIOS = ['1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9'];
