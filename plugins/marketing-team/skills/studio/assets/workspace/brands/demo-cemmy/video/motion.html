@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>CEMMY: Motion ad</title>
+<link rel="stylesheet" href="../brand.css">
+<link rel="stylesheet" href="../../../_system/layouts.css">
+<script src="../../../_system/compose.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<style>
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  .scene.center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 8cqw; }
+  .bulb { position: absolute; top: 84cqh; width: 5cqw; height: 5cqw; }
+  .tagline { font-family: var(--font-accent); color: var(--light); margin: 3cqw 0 0; }
+  #s4 .tagline { color: var(--primary); font-size: 3.6cqw; }
+  #s2 .headline { margin: 0 0 1cqw; }
+</style>
+</head><body>
+<main class="frame t-primary" style="width:1080px;height:1920px">
+
+  <div class="scene center" id="s1">
+    <i class="shape star" style="position:static;width:30cqw;height:30cqw"></i>
+    <p class="kicker" style="margin-top:3cqw">meet under the star</p>
+    <i class="shape circle bulb" style="left:12cqw"></i>
+    <i class="shape circle bulb" style="left:30cqw"></i>
+    <i class="shape circle bulb" style="left:48cqw"></i>
+    <i class="shape circle bulb" style="left:66cqw"></i>
+    <i class="shape circle bulb" style="left:84cqw"></i>
+  </div>
+
+  <div class="scene center" id="s2">
+    <h1 class="headline line">The Star's On.</h1>
+    <h1 class="headline line">We're Here.</h1>
+  </div>
+
+  <div class="scene l-photo" id="s3">
+    <div class="photo-layer"><img data-img="vd-hero-night" class="photo" alt=""></div>
+    <div class="scrim"></div>
+    <div class="copy"><p class="sub">Two scoops, one table, tonight.</p></div>
+  </div>
+
+  <div class="scene center t-accent" id="s4">
+    <span class="cta">Find your table tonight →</span>
+    <p class="tagline">#MeetUnderTheStar</p>
+  </div>
+
+  <div class="scene center" id="s5">
+    <div class="logo" data-logo="logo-reversed" style="position:static;width:44cqw;height:20cqw"></div>
+    <p class="tagline">Meet Under The Star</p>
+  </div>
+
+</main>
+<script>
+document.addEventListener('compose:ready', function () {
+  gsap.set('.scene', { opacity: 0 });
+  gsap.set('#s1', { opacity: 1 });
+  gsap.set('#s1 .shape.star', { scale: 0 });
+  gsap.set('#s1 .kicker', { opacity: 0 });
+  gsap.set('#s1 .bulb', { opacity: 0 });
+  gsap.set('#s2 .line', { opacity: 0, y: 40 });
+  gsap.set('#s3 .photo-layer, #s3 .scrim', { opacity: 0 });
+  gsap.set('#s3 .sub', { opacity: 0, y: 20 });
+  gsap.set('#s4 .cta, #s4 .tagline', { opacity: 0, scale: .6 });
+  gsap.set('#s5 .logo, #s5 .tagline', { opacity: 0, scale: .7 });
+
+  var tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
+
+  tl.to('#s1 .shape.star', { scale: 1, duration: .8, ease: 'back.out(2)' })
+    .to('#s1 .bulb', { opacity: 1, stagger: .1, duration: .3 }, '-=.3')
+    .to('#s1 .kicker', { opacity: 1, duration: .5 }, '-=.2')
+    .to('#s1', { opacity: 0, duration: .4 }, '+=1.3')
+    .set('#s2', { opacity: 1 })
+    .to('#s2 .line', { opacity: 1, y: 0, duration: .6, stagger: .3, ease: 'back.out(1.7)' })
+    .to('#s2', { opacity: 0, duration: .4 }, '+=1.8')
+    .set('#s3', { opacity: 1 })
+    .to('#s3 .photo-layer, #s3 .scrim', { opacity: 1, duration: .8 })
+    .to('#s3 .sub', { opacity: 1, y: 0, duration: .5 }, '-=.3')
+    .to('#s3', { opacity: 0, duration: .4 }, '+=1.4')
+    .set('#s4', { opacity: 1 })
+    .to('#s4 .cta', { opacity: 1, scale: 1, duration: .5, ease: 'back.out(2.5)' })
+    .to('#s4 .tagline', { opacity: 1, scale: 1, duration: .4 }, '-=.2')
+    .to('#s4', { opacity: 0, duration: .4 }, '+=1.3')
+    .set('#s5', { opacity: 1 })
+    .to('#s5 .logo', { opacity: 1, scale: 1, duration: .6, ease: 'back.out(1.7)' })
+    .to('#s5 .tagline', { opacity: 1, duration: .5 }, '-=.2');
+});
+</script>
+</body></html>

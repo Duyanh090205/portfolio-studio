@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>CEMMY: Brand & Campaign Proposal</title>
+<link rel="stylesheet" href="../brand.css">
+<script src="../../../_system/compose.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; font-family: var(--font-body); color: var(--dark); background: var(--dark); }
+  @page { size: 1600px 900px; margin: 0; }
+  .slide {
+    width: 1600px; height: 900px; display: flex; flex-direction: column; justify-content: center;
+    break-after: page; padding: 72px 96px; position: relative; overflow: hidden; background: var(--light);
+  }
+  .num { font-family: var(--font-accent); font-weight: 600; font-size: 22px; color: var(--accent); letter-spacing: .04em; margin: 0 0 6px; }
+  .title { font-family: var(--font-headline); font-weight: var(--headline-weight); font-size: 46px; color: var(--primary); margin: 0 0 28px; line-height: 1.15; }
+  .lede { font-family: var(--font-body); font-size: 20px; line-height: 1.55; color: var(--dark); max-width: 1000px; margin: 0 0 20px; }
+  .src { font-family: var(--font-body); font-weight: 700; font-size: 13px; color: var(--secondary-2, var(--primary)); background: color-mix(in srgb, var(--primary) 10%, white); border-radius: 20px; padding: 2px 10px; margin-left: 6px; white-space: nowrap; }
+  .facts { display: flex; gap: 28px; margin-top: 12px; }
+  .fact { flex: 1; background: color-mix(in srgb, var(--primary) 6%, white); border-radius: 16px; padding: 26px 24px; }
+  .fact .stat { font-family: var(--font-headline); font-weight: var(--headline-weight); font-size: 30px; color: var(--primary); margin: 0 0 8px; }
+  .fact .desc { font-size: 16px; line-height: 1.5; margin: 0; }
+  .takeaway { margin-top: auto; padding-top: 20px; border-top: 2px solid color-mix(in srgb, var(--primary) 20%, white); font-family: var(--font-accent); font-weight: 600; font-size: 22px; color: var(--primary); }
+  .logo.tl, .logo.tr, .logo.bl, .logo.br { position: absolute; }
+  .logo.tl { top: 40px; left: 96px; } .logo.tr { top: 40px; right: 96px; }
+  .row { display: flex; gap: 24px; align-items: flex-start; }
+  .swatches { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 4px; }
+  .swatch { width: 168px; border-radius: 12px; overflow: hidden; }
+  .swatch .chip { height: 84px; }
+  .swatch.light .chip { border: 1px solid color-mix(in srgb, var(--dark) 15%, white); }
+  .swatch .label { padding: 8px 10px; background: white; }
+  .swatch .name { font-size: 14px; font-weight: 700; color: var(--dark); margin: 0; }
+  .swatch .hex { font-size: 12px; color: var(--dark); opacity: .6; margin: 2px 0 0; }
+  .specimens { display: flex; gap: 28px; margin-top: 6px; }
+  .specimen { flex: 1; background: white; border-radius: 14px; padding: 20px 22px; }
+  .specimen .tag { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--primary); font-weight: 700; margin: 0 0 8px; }
+  .specimen .sample { font-family: var(--font-headline); margin: 0; }
+  .traits { display: flex; gap: 12px; margin-top: 18px; }
+  .trait { background: var(--primary); color: var(--light); font-family: var(--font-accent); font-weight: 600; font-size: 16px; padding: 8px 18px; border-radius: 20px; }
+  .logo-row { display: flex; gap: 24px; align-items: center; margin-bottom: 28px; }
+  .logo-box { width: 150px; height: 150px; border-radius: 16px; display: flex; align-items: center; justify-content: center; }
+  .logo-box.on-light { background: color-mix(in srgb, var(--primary) 5%, white); border: 1px solid color-mix(in srgb, var(--dark) 12%, white); }
+  .logo-box.on-dark { background: var(--primary); }
+  .logo-box .logo { position: static; width: 100px; height: 100px; }
+  .embeds { display: flex; gap: 28px; align-items: flex-start; }
+  .embed { border-radius: 10px; overflow: hidden; background: white; box-shadow: 0 6px 20px rgba(0,0,0,.08); }
+  .embed-cap { font-size: 13px; color: var(--dark); opacity: .65; margin-top: 8px; text-align: center; }
+  .thumbs { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; }
+  .thumb-wrap { text-align: center; }
+  .thumb-wrap .embed-cap { max-width: 200px; }
+  .cards { display: flex; gap: 22px; margin-top: 8px; }
+  .card { flex: 1; background: color-mix(in srgb, var(--primary) 6%, white); border-radius: 16px; padding: 24px 22px; }
+  .card h3 { font-family: var(--font-headline); font-size: 20px; color: var(--primary); margin: 0 0 10px; }
+  .card p { font-size: 15px; line-height: 1.5; margin: 0; }
+  .kpis { display: flex; gap: 24px; margin-top: 8px; }
+  .kpi { flex: 1; background: color-mix(in srgb, var(--accent) 12%, white); border-radius: 14px; padding: 20px; }
+  .kpi .val { font-family: var(--font-headline); font-weight: var(--headline-weight); font-size: 28px; color: var(--primary); margin: 0 0 4px; }
+  .kpi .lbl { font-size: 14px; margin: 0; }
+  .goals { display: flex; gap: 28px; margin-top: 20px; }
+  .goal { flex: 1; background: color-mix(in srgb, var(--light) 100%, white); border: 1px solid color-mix(in srgb, var(--primary) 25%, white); border-radius: 14px; padding: 20px 22px; font-size: 17px; }
+</style>
+</head>
+<body>
+
+<!-- Cover -->
+<section class="slide" style="background:var(--primary); align-items:center; text-align:center;">
+  <div class="logo" data-logo="logo-reversed" style="position:static; width:220px; height:220px; margin:0 auto 32px;"></div>
+  <p style="font-family:var(--font-accent); font-weight:600; font-size:28px; color:var(--accent); margin:0 0 12px;">Meet Under The Star</p>
+  <h1 style="font-family:var(--font-headline); font-weight:var(--headline-weight); font-size:36px; color:var(--light); margin:0; letter-spacing:.02em;">Brand &amp; Campaign Proposal</h1>
+</section>
+
+<!-- 01 The Problem / Opportunity -->
+<section class="slide">
+  <p class="num">01</p>
+  <h2 class="title">The Problem &amp; Opportunity</h2>
+  <p class="lede">Big ice cream chains sell the scoop as an ordinary treat; none of them make the scoop itself the reason a group of friends stops to share a moment together. <span class="src">brief</span></p>
+  <div class="facts">
+    <div class="fact">
+      <p class="stat">3 of 3</p>
+      <p class="desc">Category leaders reviewed — Baskin Robbins, Häagen-Dazs, Van Leeuwen — sell flavor and order-now urgency; none sell the group hangout occasion. <span class="src">desk research, unverified</span></p>
+    </div>
+    <div class="fact">
+      <p class="stat">Gen Z / young millennials</p>
+      <p class="desc">CEMMY's target already turns an ice cream run into a mini hangout, chasing the prettiest scoop worth pulling out a phone for before it melts. <span class="src">brief</span></p>
+    </div>
+    <div class="fact">
+      <p class="stat">HCMC, accessible-premium</p>
+      <p class="desc">Ho Chi Minh City scoop shops and delivery, priced between mass chains and ultra-premium pints, expanding to other cities. <span class="src">assumed</span></p>
+    </div>
+  </div>
+  <p class="takeaway">The opening isn't a better flavor claim — it's a better reason to leave the house.</p>
+</section>
+
+<!-- 02 Insight & Positioning -->
+<section class="slide">
+  <p class="num">02</p>
+  <h2 class="title">The Insight &amp; Positioning</h2>
+  <p class="lede" style="font-size:22px; font-style:italic; color:var(--primary);">"Nobody plans an ice-cream run in advance — they show up where a friend is already sitting, so the invite has to come from the shop, not the calendar." <span class="src">assumed</span></p>
+  <p class="lede">For Saigon friend groups who turn an ice cream run into a plan, CEMMY is the neon-lit berry parlour that gives an ordinary evening somewhere to happen, because one swirl of strawberry and blueberry under a lit-up star is worth leaving the house for.</p>
+  <p class="takeaway">Positioning: the ritual, not the recipe, is the product.</p>
+</section>
+
+<!-- 03 Brand Direction -->
+<section class="slide">
+  <p class="num">03</p>
+  <h2 class="title">Brand Direction</h2>
+  <div class="logo-row">
+    <div class="logo-box on-light"><div class="logo" data-logo="logo-primary"></div></div>
+    <div class="logo-box on-dark"><div class="logo" data-logo="logo-reversed"></div></div>
+    <div class="logo-box on-light"><div class="logo" data-logo="logo-horizontal" style="width:130px;height:60px;"></div></div>
+    <div class="logo-box on-light"><div class="logo" data-logo="logo-symbol" style="width:70px;height:70px;"></div></div>
+  </div>
+  <div class="row">
+    <div style="flex:1.3;">
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:#0F3D2E;"></div><div class="label"><p class="name">Parlour Green</p><p class="hex">Primary</p></div></div>
+        <div class="swatch"><div class="chip" style="background:#FF9FB8;"></div><div class="label"><p class="name">Neon Blush</p><p class="hex">Secondary</p></div></div>
+        <div class="swatch"><div class="chip" style="background:#F2B441;"></div><div class="label"><p class="name">Marquee Gold</p><p class="hex">Accent</p></div></div>
+        <div class="swatch light"><div class="chip" style="background:#FFF3DF;"></div><div class="label"><p class="name">Marquee Cream</p><p class="hex">Light</p></div></div>
+      </div>
+    </div>
+    <div style="flex:1;">
+      <div class="specimens" style="flex-direction:column; gap:14px;">
+        <div class="specimen"><p class="tag">Headline · Baloo 2 800</p><p class="sample" style="font-size:26px; color:var(--primary);">Meet Under The Star</p></div>
+        <div class="specimen"><p class="tag">Accent · Caveat 600</p><p class="sample" style="font-family:var(--font-accent); font-size:26px; color:var(--primary);">Meet us tonight</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="traits">
+    <span class="trait">Nostalgic</span><span class="trait">Playful</span><span class="trait">Generous</span><span class="trait">Night-bright</span>
+  </div>
+</section>
+
+<!-- 04 Key Visual Direction -->
+<section class="slide">
+  <p class="num">04</p>
+  <h2 class="title">Key Visual Direction</h2>
+  <p class="lede">Big idea: the lit star sign is an open invitation — when it's on, the parlour is the plan.</p>
+  <div class="embeds">
+    <div>
+      <div class="embed" style="width:280px;height:350px;"><iframe src="../campaign/kv-portrait.html" style="width:1080px;height:1350px;border:0;transform:scale(.2593);transform-origin:0 0"></iframe></div>
+      <p class="embed-cap">Key visual — portrait (feed / print)</p>
+    </div>
+    <div>
+      <div class="embed" style="width:560px;height:315px;"><iframe src="../campaign/kv-landscape.html" style="width:1920px;height:1080px;border:0;transform:scale(.2917);transform-origin:0 0"></iframe></div>
+      <p class="embed-cap">Key visual — banner (web / YouTube)</p>
+    </div>
+  </div>
+  <p class="takeaway">"The Star's On. We're Here." — two scoops, one table, tonight.</p>
+</section>
+
+<!-- 05 Social Media Creative Examples -->
+<section class="slide">
+  <p class="num">05</p>
+  <h2 class="title">Social Media Creative Examples</h2>
+  <p class="lede">Three pillars, one voice: Tonight's Swirl, Bring The Group, Under The Star.</p>
+  <div class="thumbs">
+    <div class="thumb-wrap"><div class="embed" style="width:240px;height:300px;"><iframe src="../social-media/post-launch.html" style="width:1080px;height:1350px;border:0;transform:scale(.2222);transform-origin:0 0"></iframe></div><p class="embed-cap">Launch post</p></div>
+    <div class="thumb-wrap"><div class="embed" style="width:240px;height:300px;"><iframe src="../social-media/post-promo.html" style="width:1080px;height:1350px;border:0;transform:scale(.2222);transform-origin:0 0"></iframe></div><p class="embed-cap">Promo post</p></div>
+    <div class="thumb-wrap"><div class="embed" style="width:240px;height:300px;"><iframe src="../social-media/post-awareness.html" style="width:1080px;height:1350px;border:0;transform:scale(.2222);transform-origin:0 0"></iframe></div><p class="embed-cap">Brand personality post</p></div>
+    <div class="thumb-wrap"><div class="embed" style="width:240px;height:300px;"><iframe src="../social-media/post-seasonal.html" style="width:1080px;height:1350px;border:0;transform:scale(.2222);transform-origin:0 0"></iframe></div><p class="embed-cap">Seasonal post</p></div>
+    <div class="thumb-wrap"><div class="embed" style="width:169px;height:300px;"><iframe src="../social-media/story-launch.html" style="width:1080px;height:1920px;border:0;transform:scale(.15625);transform-origin:0 0"></iframe></div><p class="embed-cap">Launch story</p></div>
+  </div>
+</section>
+
+<!-- 06 Packaging & Poster Application -->
+<section class="slide">
+  <p class="num">06</p>
+  <h2 class="title">Packaging &amp; Poster Application</h2>
+  <p class="lede">The pint tub stays the hero pack; variants are colour-coded by a lid band that ties straight back to the campaign.</p>
+  <div class="thumbs">
+    <div class="thumb-wrap"><div class="embed" style="width:208px;height:260px;"><iframe src="../packaging/pack-front.html" style="width:1200px;height:1500px;border:0;transform:scale(.1733);transform-origin:0 0"></iframe></div><p class="embed-cap">Pint tub front</p></div>
+    <div class="thumb-wrap"><div class="embed" style="width:260px;height:260px;"><iframe src="../packaging/pack-seal.html" style="width:1000px;height:1000px;border:0;transform:scale(.26);transform-origin:0 0"></iframe></div><p class="embed-cap">Lid seal</p></div>
+    <div class="thumb-wrap"><div class="embed" style="width:223px;height:260px;"><iframe src="../packaging/bag-front.html" style="width:1200px;height:1400px;border:0;transform:scale(.1857);transform-origin:0 0"></iframe></div><p class="embed-cap">Paper bag</p></div>
+    <div class="thumb-wrap"><div class="embed" style="width:260px;height:182px;"><iframe src="../packaging/thank-you-card.html" style="width:1500px;height:1050px;border:0;transform:scale(.1733);transform-origin:0 0"></iframe></div><p class="embed-cap">Thank-you card</p></div>
+    <div class="thumb-wrap"><div class="embed" style="width:260px;height:195px;"><img data-img="pk-range" style="width:260px;height:195px;object-fit:cover;display:block;" alt=""></div><p class="embed-cap">Packaging range</p></div>
+  </div>
+</section>
+
+<!-- 07 Campaign Mockup Preview -->
+<section class="slide">
+  <p class="num">07</p>
+  <h2 class="title">Campaign Mockup Preview</h2>
+  <p class="lede">The same key idea, cut down for the street: one image, one giant logo, five words.</p>
+  <div class="embeds">
+    <div>
+      <div class="embed" style="width:520px;height:260px;"><img data-img="oh-billboard-mockup" style="width:520px;height:260px;object-fit:cover;display:block;" alt=""></div>
+      <p class="embed-cap">Billboard — street mockup</p>
+    </div>
+    <div>
+      <div class="embed" style="width:220px;height:275px;"><img data-img="oh-poster-mockup" style="width:220px;height:275px;object-fit:cover;display:block;" alt=""></div>
+      <p class="embed-cap">Bus-shelter poster — mockup</p>
+    </div>
+    <div>
+      <div class="embed" style="width:340px;height:170px;"><iframe src="../ooh/billboard.html" style="width:2400px;height:1200px;border:0;transform:scale(.1417);transform-origin:0 0"></iframe></div>
+      <p class="embed-cap">Billboard design (fallback)</p>
+    </div>
+  </div>
+</section>
+
+<!-- 08 Use Across Platforms -->
+<section class="slide">
+  <p class="num">08</p>
+  <h2 class="title">Use Across Platforms</h2>
+  <div class="cards">
+    <div class="card"><h3>Social Media</h3><p>3 content pillars run the IG/TikTok feed and story series, showing the star switching on at dusk as the daily "invite."</p></div>
+    <div class="card"><h3>In-store &amp; Packaging</h3><p>Pint tubs, cups, bags and the thank-you card carry the same plaque logo and lid-band colour coding customers see in hand.</p></div>
+    <div class="card"><h3>Outdoor &amp; Digital Ads</h3><p>Billboard and bus-shelter placements near parlours during the 5–9pm commute, echoed in Meta ad concepts for paid social.</p></div>
+    <div class="card"><h3>Community &amp; UGC</h3><p>Micro-influencer "star table" check-ins and the #MeetUnderTheStar hashtag turn the ritual into a repostable format.</p></div>
+  </div>
+</section>
+
+<!-- 09 Motion, Ads & Results -->
+<section class="slide">
+  <p class="num">09</p>
+  <h2 class="title">Motion, Ads &amp; Results</h2>
+  <div class="row" style="align-items:flex-start;">
+    <div style="flex:0 0 auto;">
+      <div class="embed" style="width:225px;height:400px;"><iframe src="../video/motion.html" style="width:1080px;height:1920px;border:0;transform:scale(.2083);transform-origin:0 0"></iframe></div>
+      <p class="embed-cap">15s motion ad</p>
+    </div>
+    <div style="flex:0 0 auto; display:flex; gap:18px;">
+      <div class="thumb-wrap"><div class="embed" style="width:200px;height:200px;"><iframe src="../ads/ad-1.html" style="width:1080px;height:1080px;border:0;transform:scale(.1852);transform-origin:0 0"></iframe></div><p class="embed-cap">Ad: The Star's On</p></div>
+      <div class="thumb-wrap"><div class="embed" style="width:200px;height:200px;"><iframe src="../ads/ad-2.html" style="width:1080px;height:1080px;border:0;transform:scale(.1852);transform-origin:0 0"></iframe></div><p class="embed-cap">Ad: Built To Split</p></div>
+    </div>
+    <div style="flex:1;">
+      <div class="kpis" style="flex-direction:column; gap:12px;">
+        <div class="kpi"><p class="val">128,400 reach <span class="src">simulated</span></p><p class="lbl">+33% vs previous month</p></div>
+        <div class="kpi"><p class="val">6.8% engagement <span class="src">simulated</span></p><p class="lbl">up from 6.0%, led by the "Bring The Group" promo post</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Closing -->
+<section class="slide" style="background:var(--primary); color:var(--light); align-items:center; text-align:center;">
+  <div class="logo" data-logo="logo-reversed" style="position:static; width:110px; height:110px; margin:0 auto 24px;"></div>
+  <h2 style="font-family:var(--font-headline); font-weight:var(--headline-weight); font-size:38px; color:var(--light); margin:0 0 20px;">The star's on. We're here.</h2>
+  <div class="goals" style="max-width:1100px;">
+    <div class="goal" style="background:color-mix(in srgb, var(--light) 12%, var(--primary)); border-color:color-mix(in srgb, var(--light) 30%, var(--primary)); color:var(--light);">+20% evening (6–9pm) foot traffic in 6 weeks <span class="src" style="background:color-mix(in srgb, var(--accent) 30%, var(--primary)); color:var(--light);">goal</span></div>
+    <div class="goal" style="background:color-mix(in srgb, var(--light) 12%, var(--primary)); border-color:color-mix(in srgb, var(--light) 30%, var(--primary)); color:var(--light);">500+ #MeetUnderTheStar tags in the first month <span class="src" style="background:color-mix(in srgb, var(--accent) 30%, var(--primary)); color:var(--light);">goal</span></div>
+  </div>
+</section>
+
+</body></html>

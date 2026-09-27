@@ -1,0 +1,95 @@
+# Brand board guide
+
+## Strategy first
+- The **positioning** is one sentence: *For [audience], [brand] is the [frame] that [benefit], because [reason to believe].* It must answer `brief.problem`.
+- **Personality:** 3–4 adjectives that could guide a stranger's decisions. Avoid generic words like "quality" or "innovative".
+- **Voice:** how the brand writes. Give 2 do's plus one sample line.
+- **Tagline:** short and ownable, 2–4 words is ideal. It must not be a category cliché.
+
+## Colour palette (5–6 colours)
+- Use each role once or twice: Primary, Secondary, Accent, Light, Dark.
+  - **Light** is the main background, e.g. a cream or tinted white.
+  - **Dark** is used for text and reversed logos.
+- Give each colour an evocative, product-linked name, such as "Forest Green", "Berry Crush" or "Vanilla Cream".
+- `use` explains where the colour goes, e.g. "Logo, headlines", "Backgrounds, packaging base", "Promo badges only".
+- **Contrast:** Dark on Light and Primary on Light must reach WCAG AA (4.5:1) for text. Accent colours are for shapes, not small text.
+- The palette should look like the product world. Avoid default saturated web colours.
+
+## Typography
+- **Google Fonts only.** Canva has them too, so the user can reuse them.
+- `headline`: the display face that carries personality. `body`: a highly readable companion. `accent`: optional, e.g. an italic serif for taglines.
+- `weight` is a number (400/600/700/800). `style` is "normal" or "italic".
+- `why` is one line explaining how the font expresses the personality.
+- Good families: Poppins, Montserrat, DM Sans, Inter, Outfit, Sora, Manrope, Fraunces, Playfair Display, DM Serif Display, Young Serif, Bricolage Grotesque, Space Grotesk, Nunito, Quicksand, Baloo 2, Righteous.
+
+## Logos: `logos.js`
+Make 5 logos in this order:
+
+| id | name | bg | What |
+|---|---|---|---|
+| `logo-primary` | Primary logo | light | Symbol + wordmark, the hero lock-up |
+| `logo-horizontal` | Horizontal logo | light | Symbol beside the wordmark, for narrow spaces |
+| `logo-symbol` | Symbol / app icon | light | The mark alone inside a rounded square or circle in the Primary colour |
+| `logo-reversed` | Reversed logo | dark | Primary lock-up in Light colours for dark backgrounds |
+| `logo-mono` | One-colour logo | light | Primary lock-up in Dark only, for stamps and embossing |
+
+Add 2–3 graphic elements with `"kind": "element"`, for example:
+- a repeat pattern tile;
+- a badge or sticker ("NEW", "Since 2026", a seal);
+- a signature shape (wave, drip, arch, sparkle).
+
+### SVG rules (important)
+- Start with `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 W H">`. Give **no width/height attributes**.
+- The viewBox hugs the artwork, with about 6–10% padding on each side.
+- **Wordmark:**
+  - Use `<text>` with `font-family="'<Headline family>', sans-serif"` (exact Google Fonts name, **always in single quotes**, because names like `Baloo 2` are invalid CSS unquoted), `font-weight="<n>"`, `text-anchor="middle"` and an explicit `x`/`y` baseline.
+  - Use `letter-spacing` where it helps.
+  - Estimate the width as `characters × font-size × 0.62` for bold sans, or `× 0.55` for serif, and size the viewBox from that.
+- **Symbol:** simple geometric construction from circles, rects, polygons and paths with a few curves. Compute star and polygon points properly. The symbol must read at 32px, so avoid hairlines under 2% of the width.
+- **Colours:** only palette hex values.
+- **Forbidden:** `<image>`, external links, `<foreignObject>`, filters, CSS `@import`, backticks, `${`.
+- Keep each SVG under about 2.5 KB. Reuse shapes across the lock-ups so the family feels consistent.
+- The wordmark text is the brand name exactly, usually uppercase or title case as the direction dictates.
+
+## Direction paragraphs (`kit`)
+Write 2–3 sentences each, concrete enough for another designer to follow:
+- `illustration`: mascot concept (who it is, shape language, expression) or illustration style.
+- `photography`: `direction` (subjects, composition, props, backgrounds), `lighting`, and 3 `do` and 3 `dont`.
+- `graphicElements`: how shapes and patterns are used.
+- `social`: grid feel, how photos, colour blocks and type combine, and the text-to-image ratio.
+- `packaging`: materials, base colour, logo placement, how flavours or variants are colour-coded.
+- `applications`: 3–4 touchpoints, e.g. cup, tote, storefront, uniform, delivery bag.
+
+## promptBlock (60–90 words)
+A reusable style suffix that the HUB appends to every image prompt of this brand. Include:
+- the palette by colour name and hex;
+- lighting and camera style;
+- surface and props vocabulary;
+- mood words;
+- "clean commercial product photography" or the illustration equivalent;
+- "no text, no watermark, no extra logos".
+
+## Image tasks: exactly 8, all with `"step": "brand-strategist"`, stored in `brand-strategist/step.js`
+
+| id | group | ratio | refs | What |
+|---|---|---|---|---|
+| `bs-hero-product` | Photography direction | 4:5 | logo-primary | Hero product shot, the brand's signature image |
+| `bs-product-detail` | Photography direction | 1:1 | – | Close-up of texture or ingredient |
+| `bs-lifestyle` | Photography direction | 4:5 | – | A real moment of the audience using the product |
+| `bs-mascot` | Mascot / illustration style | 1:1 | – | Mascot or illustration style sample on a plain background |
+| `bs-social-1` | Social media visual style | 4:5 | – | A post-style visual with an empty area for a headline (added later in Canva) |
+| `bs-social-2` | Social media visual style | 4:5 | – | A different post type, e.g. flat lay or colour-block composition |
+| `bs-packaging-family` | Packaging direction | 4:3 | logo-primary | The packaging range together, with the logo on each piece |
+| `bs-brand-application` | Brand applications | 4:3 | logo-primary | Tote, storefront or merchandise with the logo |
+
+Prompt rules:
+- One English paragraph of 50–100 words. Cover the subject, setting, composition and camera (angle, lens feel), lighting, colours by name, props and mood.
+- **Never** ask the model to invent the logo or brand lettering. When a logo should appear:
+  - put `logo-primary` in `refs`;
+  - write "place the attached logo on the <surface>, flat, centered, undistorted".
+- Headlines and text are added later in Canva, so ask for empty space instead, e.g. "leave clean empty space in the upper third for a headline".
+- `tool`: "Gemini" for most tasks. Use "ChatGPT" for the one most important photoreal hero if it demands perfection.
+- Don't repeat the promptBlock inside the prompt. The HUB adds it.
+- For `bs-mascot`, set `"style": "none"` because it is an illustration. Describe the illustration style yourself.
+- Never name the brand in a prompt without a logo ref. Say "an unbranded … pint".
+- Composition: `bs-social-1` and `bs-social-2` are backgrounds for `l-photo` posts, so put the subject in the upper half and keep the lower 45% calm for the headline.

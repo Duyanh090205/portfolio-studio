@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>CEMMY: Social Media Report</title>
+<link rel="stylesheet" href="../brand.css">
+<script src="../../../_system/compose.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  body { background: var(--light); color: var(--dark); font-family: var(--font-body); margin: 0; }
+  main { max-width: 1200px; margin: 0 auto; padding: 48px 32px 80px; }
+  header.rpt { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 8px; flex-wrap: wrap; }
+  header.rpt .logo { position: static; width: 64px; height: 64px; }
+  header.rpt h1 { font-family: var(--font-headline); font-weight: var(--headline-weight); font-size: 32px; margin: 0; color: var(--primary); }
+  .source-label { font-family: var(--font-accent); font-size: 18px; color: var(--dark); background: color-mix(in srgb, var(--accent) 20%, white); border-radius: 999px; padding: 6px 16px; display: inline-block; margin: 12px 0 32px; }
+  h2.section { font-family: var(--font-headline); font-weight: var(--headline-weight); font-size: 22px; color: var(--primary); margin: 56px 0 4px; }
+  .section-num { font-family: var(--font-accent); color: var(--secondary); font-size: 16px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 20px; }
+  .kpi-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid color-mix(in srgb, var(--primary) 12%, white); }
+  .kpi-card .label { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: color-mix(in srgb, var(--dark) 60%, white); }
+  .kpi-card .value { font-family: var(--font-headline); font-weight: var(--headline-weight); font-size: 30px; color: var(--dark); margin: 6px 0 4px; }
+  .kpi-card .change { font-size: 14px; font-weight: 700; }
+  .change.up { color: #1a7a4c; } .change.down { color: #b3423a; }
+  .chart-box { position: relative; height: 280px; background: white; border-radius: 16px; padding: 20px; margin-top: 16px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  table.posts { width: 100%; border-collapse: collapse; margin-top: 16px; background: white; border-radius: 16px; overflow: hidden; }
+  table.posts th, table.posts td { text-align: left; padding: 12px 16px; font-size: 14px; border-bottom: 1px solid color-mix(in srgb, var(--primary) 10%, white); }
+  table.posts th { background: color-mix(in srgb, var(--primary) 8%, white); font-family: var(--font-accent); font-size: 15px; }
+  .tag { display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 999px; background: color-mix(in srgb, var(--secondary) 30%, white); color: var(--dark); }
+  .audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+  .aud-card { background: white; border-radius: 16px; padding: 20px; }
+  .aud-card h3 { font-family: var(--font-accent); font-size: 17px; margin: 0 0 12px; color: var(--primary); }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+  .bar-row .bar-label { width: 84px; flex-shrink: 0; }
+  .bar-row .bar-track { flex: 1; height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--primary) 8%, white); overflow: hidden; }
+  .bar-row .bar-fill { height: 100%; border-radius: 999px; background: var(--secondary); }
+  .bar-row .bar-value { width: 40px; text-align: right; flex-shrink: 0; }
+  .cards-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  .insight-card { background: white; border-radius: 16px; padding: 20px; }
+  .insight-card h3 { font-family: var(--font-accent); font-size: 18px; margin: 0 0 12px; color: var(--primary); }
+  .insight-card ol { margin: 0; padding-left: 20px; font-size: 15px; line-height: 1.6; }
+  .insight-card li { margin-bottom: 10px; }
+  @media screen and (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-2, .audience-grid, .cards-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head><body>
+<main>
+  <header class="rpt">
+    <div>
+      <span class="section-num">CEMMY</span>
+      <h1 id="rpt-title">Social Media Report</h1>
+    </div>
+    <div class="logo" data-logo="logo-primary"></div>
+  </header>
+  <span class="source-label" id="rpt-source"></span>
+
+  <h2 class="section"><span class="section-num">01 · </span>Overview</h2>
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <h2 class="section"><span class="section-num">02 · </span>Weekly reach and engagement</h2>
+  <div class="chart-box"><canvas id="chart-weekly"></canvas></div>
+
+  <div class="grid-2">
+    <div>
+      <h2 class="section"><span class="section-num">03 · </span>Engagement rate by platform</h2>
+      <div class="chart-box"><canvas id="chart-platform"></canvas></div>
+    </div>
+    <div>
+      <h2 class="section"><span class="section-num">04 · </span>Top topics (share of engagement)</h2>
+      <div class="chart-box"><canvas id="chart-topics"></canvas></div>
+    </div>
+  </div>
+
+  <h2 class="section"><span class="section-num">05 · </span>Top 5 posts by reach</h2>
+  <table class="posts">
+    <thead><tr><th>Post</th><th>Pillar</th><th>Format</th><th>Reach</th><th>Engagements</th></tr></thead>
+    <tbody id="posts-body"></tbody>
+  </table>
+
+  <h2 class="section"><span class="section-num">06 · </span>Performance by content format</h2>
+  <div class="chart-box"><canvas id="chart-format"></canvas></div>
+
+  <h2 class="section"><span class="section-num">07 · </span>Audience</h2>
+  <div class="audience-grid">
+    <div class="aud-card"><h3>Gender</h3><div id="aud-gender"></div></div>
+    <div class="aud-card"><h3>Age</h3><div id="aud-age"></div></div>
+    <div class="aud-card"><h3>Top regions</h3><div id="aud-regions"></div></div>
+  </div>
+
+  <h2 class="section"><span class="section-num">08 · </span>Insights and recommendations</h2>
+  <div class="cards-2">
+    <div class="insight-card">
+      <h3>Key insights</h3>
+      <ol>
+        <li>Engagement rate rose from 6.0% to 6.8% while reach grew 33%, so the swirl-and-sharing story is landing with a wider audience, not only the launch crowd.</li>
+        <li>The "Bring The Group" promo post was the single highest post of the month for both reach (24,600) and engagements (2,150), confirming the group-offer angle is the strongest pillar right now.</li>
+        <li>New-follower growth cooled 31% off the launch spike, expected after an opening month, but rising engagement per follower shows the base warming up rather than the account stalling.</li>
+      </ol>
+    </div>
+    <div class="insight-card">
+      <h3>Recommendations</h3>
+      <ol>
+        <li>Plan at least one more "Bring The Group" style offer post next month; it is the best-performing content so far.</li>
+        <li>Instagram's engagement rate (7.4%) is well ahead of Facebook's (5.7%): shift more story and photo content there, and keep Facebook focused on the group-offer angle.</li>
+        <li>Follower growth is slowing, so pair the next launch-style moment (a new flavour) with a small paid boost or a local collab to bring in fresh top-of-funnel reach.</li>
+      </ol>
+    </div>
+  </div>
+</main>
+
+<script>
+const DATA = {
+  month: "October 2026",
+  source: "Simulated data for portfolio demonstration",
+  totals: {
+    lastMonth: { reach: 96500, engagements: 5800, newFollowers: 2150 },
+    thisMonth: { reach: 128400, engagements: 8750, newFollowers: 1480 }
+  },
+  weekly: [
+    { week: "Week 1", reach: 28000, engagements: 1700 },
+    { week: "Week 2", reach: 31500, engagements: 2050 },
+    { week: "Week 3", reach: 33800, engagements: 2300 },
+    { week: "Week 4", reach: 35100, engagements: 2700 }
+  ],
+  platforms: [
+    { name: "Instagram", reach: 82000, engagements: 6100 },
+    { name: "Facebook", reach: 46400, engagements: 2650 }
+  ],
+  topPosts: [
+    { title: "Promo post", pillar: "Bring The Group", format: "Photo Post", reach: 24600, engagements: 2150 },
+    { title: "Launch story", pillar: "Tonight's Swirl", format: "Story", reach: 21300, engagements: 1890 },
+    { title: "Seasonal post", pillar: "Under The Star", format: "Colour-block Post", reach: 19800, engagements: 1540 },
+    { title: "Launch post", pillar: "Tonight's Swirl", format: "Photo Post", reach: 17200, engagements: 1320 },
+    { title: "Brand personality post", pillar: "Under The Star", format: "Colour-block Post", reach: 14500, engagements: 980 }
+  ],
+  formats: [
+    { name: "Story", reach: 21300, engagements: 1890 },
+    { name: "Photo Post", reach: 41800, engagements: 3470 },
+    { name: "Colour-block Post", reach: 34300, engagements: 2520 }
+  ],
+  topics: [
+    { name: "Tonight's Swirl", share: 38 },
+    { name: "Bring The Group", share: 32 },
+    { name: "Under The Star", share: 30 }
+  ],
+  audience: {
+    gender: [ { label: "Female", value: 64 }, { label: "Male", value: 34 }, { label: "Other", value: 2 } ],
+    age: [ { label: "18-24", value: 46 }, { label: "25-34", value: 38 }, { label: "35-44", value: 12 }, { label: "45+", value: 4 } ],
+    regions: [ { label: "Ho Chi Minh City", value: 78 }, { label: "Hanoi", value: 9 }, { label: "Da Nang", value: 5 }, { label: "Other", value: 8 } ]
+  }
+};
+
+function pctChange(prev, curr) { return ((curr - prev) / prev) * 100; }
+function fmt(n) { return Math.round(n).toLocaleString('en-US'); }
+function fmtChange(pct, suffix) {
+  const sign = pct >= 0 ? '+' : '';
+  return `<span class="change ${pct >= 0 ? 'up' : 'down'}">${sign}${pct.toFixed(1)}${suffix || '%'} vs last month</span>`;
+}
+
+document.addEventListener('compose:ready', () => {
+  Chart.defaults.font.family = getComputedStyle(document.documentElement).getPropertyValue('--font-body');
+  const primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+  const secondary = getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim();
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  const accent2 = getComputedStyle(document.documentElement).getPropertyValue('--accent-2').trim();
+  const dark = getComputedStyle(document.documentElement).getPropertyValue('--dark').trim();
+
+  document.getElementById('rpt-title').textContent = `CEMMY Social Media Report: ${DATA.month}`;
+  document.getElementById('rpt-source').textContent = DATA.source;
+
+  const lm = DATA.totals.lastMonth, tm = DATA.totals.thisMonth;
+  const lmRate = (lm.engagements / lm.reach) * 100;
+  const tmRate = (tm.engagements / tm.reach) * 100;
+  const rateChangePp = tmRate - lmRate;
+
+  const kpis = [
+    { label: 'Reach', value: fmt(tm.reach), change: fmtChange(pctChange(lm.reach, tm.reach)) },
+    { label: 'Engagements', value: fmt(tm.engagements), change: fmtChange(pctChange(lm.engagements, tm.engagements)) },
+    { label: 'New followers', value: fmt(tm.newFollowers), change: fmtChange(pctChange(lm.newFollowers, tm.newFollowers)) },
+    { label: 'Engagement rate', value: `${tmRate.toFixed(1)}%`, change: fmtChange(rateChangePp, 'pp') }
+  ];
+  document.getElementById('kpi-grid').innerHTML = kpis.map(k =>
+    `<div class="kpi-card"><div class="label">${k.label}</div><div class="value">${k.value}</div><div>${k.change}</div></div>`
+  ).join('');
+
+  new Chart(document.getElementById('chart-weekly'), {
+    type: 'line',
+    data: {
+      labels: DATA.weekly.map(w => w.week),
+      datasets: [
+        { label: 'Reach', data: DATA.weekly.map(w => w.reach), borderColor: primary, backgroundColor: primary, yAxisID: 'y', tension: .3 },
+        { label: 'Engagements', data: DATA.weekly.map(w => w.engagements), borderColor: accent, backgroundColor: accent, yAxisID: 'y1', tension: .3 }
+      ]
+    },
+    options: {
+      maintainAspectRatio: false,
+      scales: {
+        y: { position: 'left', title: { display: true, text: 'Reach' } },
+        y1: { position: 'right', title: { display: true, text: 'Engagements' }, grid: { drawOnChartArea: false } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('chart-platform'), {
+    type: 'bar',
+    data: {
+      labels: DATA.platforms.map(p => p.name),
+      datasets: [{ label: 'Engagement rate', data: DATA.platforms.map(p => +((p.engagements / p.reach) * 100).toFixed(2)), backgroundColor: [primary, secondary] }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { ticks: { callback: v => v + '%' } } }
+    }
+  });
+
+  new Chart(document.getElementById('chart-topics'), {
+    type: 'doughnut',
+    data: {
+      labels: DATA.topics.map(t => t.name),
+      datasets: [{ data: DATA.topics.map(t => t.share), backgroundColor: [primary, secondary, accent] }]
+    },
+    options: { maintainAspectRatio: false }
+  });
+
+  new Chart(document.getElementById('chart-format'), {
+    type: 'bar',
+    data: {
+      labels: DATA.formats.map(f => f.name),
+      datasets: [{ label: 'Engagement rate', data: DATA.formats.map(f => +((f.engagements / f.reach) * 100).toFixed(2)), backgroundColor: secondary }]
+    },
+    options: {
+      indexAxis: 'y',
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { x: { ticks: { callback: v => v + '%' } } }
+    }
+  });
+
+  document.getElementById('posts-body').innerHTML = DATA.topPosts.map(p =>
+    `<tr><td>${p.title}</td><td><span class="tag">${p.pillar}</span></td><td>${p.format}</td><td>${fmt(p.reach)}</td><td>${fmt(p.engagements)}</td></tr>`
+  ).join('');
+
+  function renderBars(elId, items) {
+    document.getElementById(elId).innerHTML = items.map(i =>
+      `<div class="bar-row"><span class="bar-label">${i.label}</span><div class="bar-track"><div class="bar-fill" style="width:${i.value}%"></div></div><span class="bar-value">${i.value}%</span></div>`
+    ).join('');
+  }
+  renderBars('aud-gender', DATA.audience.gender);
+  renderBars('aud-age', DATA.audience.age);
+  renderBars('aud-regions', DATA.audience.regions);
+});
+</script>
+</body></html>

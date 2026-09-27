@@ -1,0 +1,16 @@
+{
+  "name": "portfolio-studio",
+  "owner": {
+    "name": "Portfolio Studio"
+  },
+  "metadata": {
+    "description": "A marketing team of Claudes for building fictional-brand portfolio work."
+  },
+  "plugins": [
+    {
+      "name": "marketing-team",
+      "source": "./plugins/marketing-team",
+      "description": "Brand Strategist, Social Media, Campaign, Packaging, OOH, Proposal, Video, Ads and Report roles that hand work to each other through a shared brand kit, plus a visual HUB to track everything."
+    }
+  ]
+}

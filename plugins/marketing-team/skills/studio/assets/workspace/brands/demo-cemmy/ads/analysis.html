@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>CEMMY: Competitive Ads Analysis</title>
+<link rel="stylesheet" href="../brand.css">
+<link rel="stylesheet" href="../../../_system/layouts.css">
+<script src="../../../_system/compose.js"></script>
+<style>
+  body{max-width:1200px;margin:0 auto;padding:48px 32px 96px;font-family:var(--font-body);color:var(--dark);background:var(--light)}
+  h1{font-family:var(--font-headline);font-weight:var(--headline-weight);color:var(--primary);font-size:40px;margin:0 0 8px}
+  .tagline{font-family:var(--font-accent);font-size:22px;color:var(--secondary);margin:0 0 8px}
+  .flag{display:inline-block;font-size:13px;font-weight:700;color:var(--dark);background:color-mix(in srgb, var(--accent) 25%, white);border:1px solid var(--accent);border-radius:8px;padding:4px 10px;margin-bottom:28px}
+  section{margin:48px 0}
+  h2{font-family:var(--font-headline);font-weight:var(--headline-weight);color:var(--primary);font-size:24px;border-bottom:2px solid color-mix(in srgb, var(--primary) 20%, white);padding-bottom:8px;margin-bottom:20px}
+  .stats{display:flex;gap:16px;flex-wrap:wrap;margin:32px 0}
+  .stat{flex:1;min-width:180px;background:color-mix(in srgb, var(--primary) 8%, white);border-radius:14px;padding:18px 20px}
+  .stat b{display:block;font-family:var(--font-headline);font-size:30px;color:var(--primary)}
+  .stat span{font-size:13px;color:var(--dark)}
+  table{width:100%;border-collapse:collapse;margin:16px 0}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid color-mix(in srgb, var(--primary) 15%, white);font-size:14px;vertical-align:top}
+  th{background:color-mix(in srgb, var(--primary) 10%, white);color:var(--primary);font-family:var(--font-headline);font-weight:700}
+  .gap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .gap-card{background:color-mix(in srgb, var(--secondary) 15%, white);border-radius:14px;padding:20px}
+  .gap-card b{display:block;color:var(--primary);font-family:var(--font-headline);margin-bottom:6px}
+  .concept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .concept{background:color-mix(in srgb, var(--primary) 6%, white);border:1px solid color-mix(in srgb, var(--primary) 20%, white);border-radius:14px;padding:20px}
+  .concept b{display:block;font-family:var(--font-headline);color:var(--primary);font-size:17px;margin-bottom:6px}
+  .concept .angle{font-family:var(--font-accent);color:var(--secondary);font-size:16px;margin-bottom:8px}
+  @media screen and (max-width:900px){.gap-grid,.concept-grid{grid-template-columns:1fr}}
+</style>
+</head><body>
+
+<h1>CEMMY: Competitive Ads Analysis</h1>
+<p class="tagline">Read the competition. Find the gap. Make new ads for CEMMY.</p>
+<span class="flag">Desk research: unverified, check in Meta Ad Library</span>
+
+<div class="stats">
+  <div class="stat"><b>0</b><span>Ads reviewed (desk research)</span></div>
+  <div class="stat"><b>3</b><span>Brands scanned: Baskin Robbins, Häagen-Dazs, Van Leeuwen</span></div>
+  <div class="stat"><b>4</b><span>Patterns found</span></div>
+  <div class="stat"><b>3</b><span>Concepts proposed</span></div>
+</div>
+
+<section>
+  <h2>01: Hooks</h2>
+  <p>No competitor screenshots were on file for this pass, so this table is desk research from general knowledge of these chains' marketing, not a scan of live ads. Treat every row as "commonly" or "often" true, not confirmed.</p>
+  <table>
+    <tr><th>Type</th><th>Example</th><th>Who uses it</th></tr>
+    <tr><td>Flavor-of-the-month / LTO</td><td>"New flavor just dropped, get it before it's gone"</td><td>Baskin Robbins commonly leans on rotating flavors and its "31 flavors" numeric hook (desk research)</td></tr>
+    <tr><td>Sensory indulgence close-up</td><td>Macro shot of a spoon pulling through a rich swirl, "pause your day"</td><td>Häagen-Dazs often frames the product as a small daily luxury for one (desk research)</td></tr>
+    <tr><td>Aesthetic / unusual flavor name</td><td>Pastel flat-lay with a quirky flavor name as the whole hook</td><td>Van Leeuwen commonly relies on distinctive packaging and offbeat flavor names to stop the scroll (desk research)</td></tr>
+    <tr><td>Celebration / occasion tie-in</td><td>Birthday, holiday or "treat yourself" framing</td><td>Baskin Robbins and Häagen-Dazs both use seasonal and gifting occasions often (desk research)</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>02: CTAs</h2>
+  <table>
+    <tr><th>Type</th><th>Example</th><th>Who uses it</th></tr>
+    <tr><td>Direct order</td><td>"Order now" / "Get yours"</td><td>Common across all three chains for delivery-app-linked ads (desk research)</td></tr>
+    <tr><td>Store locator</td><td>"Find a scoop shop near you"</td><td>Baskin Robbins and Häagen-Dazs often push footfall to physical counters (desk research)</td></tr>
+    <tr><td>Scarcity</td><td>"Try it before it's gone"</td><td>Used often around limited-edition flavor drops (desk research)</td></tr>
+    <tr><td>Social share</td><td>"Tag a friend who needs this"</td><td>A common low-cost engagement CTA across the category (desk research)</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>03: Visual patterns</h2>
+  <table>
+    <tr><th>Type</th><th>Example</th><th>Who uses it</th></tr>
+    <tr><td>Studio product shot</td><td>Single scoop or pint on a bright solid color block, no context</td><td>Common default across the category, especially Baskin Robbins (desk research)</td></tr>
+    <tr><td>Macro food texture</td><td>Extreme close-up of the swirl or a spoon lifting product</td><td>Häagen-Dazs often favors this to signal premium texture (desk research)</td></tr>
+    <tr><td>Flat lay with props</td><td>Pint, spoon and packaging arranged on a pastel surface</td><td>Van Leeuwen commonly uses this for a design-led, shareable feed look (desk research)</td></tr>
+    <tr><td>Hand-holding shot</td><td>A single hand holding a cup or cone toward camera</td><td>Common across the category as a mobile-first thumb-stopper (desk research)</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>04: Copy structures</h2>
+  <table>
+    <tr><th>Type</th><th>Example</th><th>Who uses it</th></tr>
+    <tr><td>Pun + flavor name</td><td>A wordplay headline built around the new flavor's name</td><td>Common with Baskin Robbins and Van Leeuwen flavor launches (desk research)</td></tr>
+    <tr><td>Question hook</td><td>"Craving something new tonight?"</td><td>A frequent opener across the category to invite a scroll-stop (desk research)</td></tr>
+    <tr><td>Benefit-led</td><td>"Indulge without the wait" (delivery speed, convenience)</td><td>Common on delivery-focused ad sets (desk research)</td></tr>
+    <tr><td>Urgency</td><td>"Only here for a limited time"</td><td>Standard on LTO campaigns across the category (desk research)</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>05: The gap</h2>
+  <p>Against CEMMY's audience — Gen Z and young millennials in Ho Chi Minh City who turn an ice cream run into a mini hangout worth photographing — the category above skews toward selling the product itself, not the moment around it (desk research, unverified).</p>
+  <div class="gap-grid">
+    <div class="gap-card"><b>1. Nobody sells the hangout</b>The category's hooks and CTAs above are almost all product-first (flavor, texture, order now). None frame the ad around a group of friends deciding where to go tonight — CEMMY can own the "meet-up occasion" instead of the flavor claim.</div>
+    <div class="gap-card"><b>2. Nobody owns an evening ritual cue</b>The visual patterns above are daylight studio shots or flat lays. None use a signature lit landmark as the reason to show up at dusk — CEMMY's glowing marquee star is a ritual cue no competitor has.</div>
+    <div class="gap-card"><b>3. Nobody localizes the street scene</b>Copy and visuals above read as generic global assets. None lean into an HCMC evening-parlour, bulb-lit, pink-awning aesthetic that feels like a specific place worth pulling out a phone for — that's CEMMY's built-in shareability.</div>
+  </div>
+</section>
+
+<section>
+  <h2>06: Three concepts</h2>
+  <div class="concept-grid">
+    <div class="concept"><b>The Star's On</b><div class="angle">Angle: the evening invite</div>The lit star sign is the daily cue that the parlour is the plan tonight — turns a passive storefront light into a scroll-stopping "we're open, come sit" moment, geo-boosted 6-9pm. Wins because it needs no discount to work: the ritual is the offer.</div>
+    <div class="concept"><b>Built To Split</b><div class="angle">Angle: the social object</div>Makes the strawberry-blueberry swirl itself the reason two people show up together — one scoop, two spoons, framed as teamwork before the first bite. Wins because it turns a flavor fact into a shareable social object, something no competitor's product-shot ads do.</div>
+    <div class="concept"><b>Tag Your Star Table</b><div class="angle">Angle: the UGC mechanic</div>Every table sits under its own numbered star light; claiming and tagging it is the whole post. Wins because it scales itself through repost and check-ins, building a visible map of stars across the city that a static product ad can't replicate.</div>
+  </div>
+</section>
+
+<section>
+  <h2>07: Test plan</h2>
+  <table>
+    <tr><th>Concept</th><th>A/B idea</th><th>KPI</th></tr>
+    <tr><td>The Star's On</td><td>A: static evening photo hook vs. B: short video of the star switching on at dusk</td><td>Click-through rate on the "Get Directions" CTA, 6-9pm window</td></tr>
+    <tr><td>Built To Split</td><td>A: single-scoop close-up vs. B: two hands splitting one scoop with two spoons</td><td>Engagement rate (saves + shares) per impression</td></tr>
+    <tr><td>Tag Your Star Table</td><td>A: "Claim your table" CTA vs. B: "Tag your table" CTA</td><td>#MeetUnderTheStar tags generated per ad set</td></tr>
+  </table>
+</section>
+
+</body></html>

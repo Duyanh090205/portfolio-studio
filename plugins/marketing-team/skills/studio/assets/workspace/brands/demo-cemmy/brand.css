@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700;800&family=Nunito:wght@400;700&family=Caveat:wght@600&display=swap');
+:root {
+  --primary: #0F3D2E;
+  --secondary: #FF9FB8;
+  --accent: #F2B441;
+  --accent-2: #4C3F7A;
+  --light: #FFF3DF;
+  --dark: #221A17;
+  --font-headline: 'Baloo 2', sans-serif;
+  --headline-weight: 800;
+  --font-body: 'Nunito', sans-serif;
+  --font-accent: 'Caveat', cursive;
+}

@@ -1,0 +1,164 @@
+/* Portfolio Studio layout kit v0.3: tested layouts for visuals (posts, stories, ads, key visuals, OOH, packaging panels).
+   Every size unit is relative to the frame (cqw/cqh), so one layout works at 1080x1350, 1080x1920, 1920x1080, 2400x1200…
+   Text and photos live in separate zones; compose.js shrinks a headline that doesn't fit and reports layout problems. */
+
+body { margin: 0; }
+.frame { position: relative; overflow: hidden; container-type: size; background: var(--light, #fff); color: var(--dark, #111);
+  font-family: var(--font-body, sans-serif); box-sizing: border-box; }
+.frame *, .frame *::before, .frame *::after { box-sizing: border-box; }
+
+/* A layout is one element filling the frame: <main class="frame" style="width:1080px;height:1350px"><div class="l-photo">…</div></main> */
+.frame > [class^="l-"], .frame > [class*=" l-"] { position: absolute; inset: 0; }
+
+/* ---------- themes (background + text colour) ---------- */
+.t-primary { background: var(--primary); color: var(--light, #fff); }
+.t-secondary { background: var(--secondary); color: var(--primary); }
+.t-accent { background: var(--accent); color: var(--primary); }
+.t-light { background: var(--light, #fff); color: var(--primary); }
+.t-dark { background: var(--dark, #111); color: var(--light, #fff); }
+
+/* ---------- type ---------- */
+.kicker { font-family: var(--font-accent, var(--font-body)); font-size: 4.2cqw; line-height: 1.05; margin: 0 0 1.5cqw; }
+.headline { font-family: var(--font-headline); font-weight: var(--headline-weight, 800); font-size: 10cqw; line-height: .98;
+  letter-spacing: -.01em; margin: 0; text-wrap: balance; overflow-wrap: break-word; }
+.headline.xl { font-size: 13cqw; } .headline.sm { font-size: 7.5cqw; }
+.sub { font-size: 3.4cqw; line-height: 1.3; margin: 2.2cqw 0 0; max-width: 34ch; opacity: .92; }
+.cta { display: inline-block; width: max-content; max-width: 100%; margin-top: 3.5cqw; padding: 1.8cqw 4cqw; border-radius: 999px;
+  font-family: var(--font-headline); font-weight: var(--headline-weight, 800); font-size: 3.2cqw; background: var(--primary); color: var(--light, #fff); }
+.t-primary .cta, .t-dark .cta, .l-photo .cta { background: var(--secondary); color: var(--primary); }
+.badge { position: absolute; z-index: 4; top: 6cqw; right: 6cqw; padding: 1.6cqw 3.4cqw; border-radius: 999px; transform: rotate(-6deg);
+  font-family: var(--font-headline); font-weight: var(--headline-weight, 800); font-size: 3.2cqw; background: var(--accent-2, var(--accent));
+  color: var(--light, #fff); box-shadow: 0 .6cqw 0 rgba(0,0,0,.15); white-space: nowrap; }
+.badge.round { width: 20cqw; height: 20cqw; padding: 0 2cqw; display: grid; place-items: center; text-align: center; border-radius: 50%;
+  line-height: 1.05; white-space: normal; }
+.badge.left { right: auto; left: 6cqw; transform: rotate(6deg); }
+
+/* ---------- logo (compose.js aligns the SVG to the side it sits on) ---------- */
+.logo { position: absolute; z-index: 5; width: 22cqw; height: 10cqw; }
+.logo.tl { top: 6cqw; left: 6cqw; } .logo.tr { top: 6cqw; right: 6cqw; }
+.logo.bl { bottom: 6cqw; left: 6cqw; } .logo.br { bottom: 6cqw; right: 6cqw; }
+.logo.bc { bottom: 6cqw; left: 50%; transform: translateX(-50%); }
+.logo.sm { width: 14cqw; height: 7cqw; } .logo.lg { width: 34cqw; height: 16cqw; }
+.logo.inline { position: static; display: block; transform: none; margin-top: 3cqw; }
+/* a logo nested inside a text zone flows with the text (never floats over it) */
+.copy .logo:not(.inline), .panel .logo:not(.inline) { position: static; display: block; transform: none; margin: 0 0 3cqw; }
+.l-type .copy .logo, .l-type .copy .logo.inline { margin-left: auto; margin-right: auto; }
+
+/* ---------- photos ---------- */
+.photo { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ph { width: 100%; height: 100%; }
+.ph:not(.photo) { height: auto; aspect-ratio: 4 / 5; }
+
+/* shared: panels never grow past their zone (compose.js shrinks the headline instead) */
+.panel { position: relative; z-index: 3; display: flex; flex-direction: column; justify-content: safe center; min-height: 0; min-width: 0; overflow: hidden; }
+.photo-layer { min-height: 0; min-width: 0; }
+
+/* 1) Full-bleed photo, copy on a scrim at the bottom */
+.l-photo .photo-layer { position: absolute; inset: 0; z-index: 1; }
+.l-photo .scrim { position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(to top, color-mix(in srgb, var(--dark, #000) 82%, transparent) 0%, color-mix(in srgb, var(--dark, #000) 50%, transparent) 45%, transparent 75%); }
+.l-photo:has(.logo.tl, .logo.tr) .scrim {
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--dark, #000) 45%, transparent) 0%, transparent 22%),
+              linear-gradient(to top, color-mix(in srgb, var(--dark, #000) 82%, transparent) 0%, color-mix(in srgb, var(--dark, #000) 50%, transparent) 45%, transparent 75%); }
+.l-photo .copy { position: absolute; z-index: 3; left: 7cqw; right: 7cqw; bottom: 8cqw; max-height: 60cqh; overflow: hidden; color: var(--light, #fff); }
+.l-photo .copy.top { bottom: auto; top: 20cqw; }
+.l-photo:has(.badge) .copy.top { top: 26cqw; }
+
+/* 2) Split: colour panel with copy + photo panel (side by side if wide, stacked if tall) */
+.l-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+.l-split .panel { padding: 8cqw 7cqw; }
+.l-split .photo-layer { position: relative; overflow: hidden; z-index: 1; }
+
+/* 3) Card: colour field, copy on top, rounded photo card below: never overlapping */
+.l-card { display: flex; flex-direction: column; padding: 7cqw; gap: 5cqw; }
+.l-card .copy { position: relative; z-index: 3; flex: none; max-height: 45cqh; overflow: hidden; }
+.l-card:has(.badge, .logo.tr) .copy { padding-right: 18cqw; }
+.l-card .photo-layer { position: relative; z-index: 1; flex: 1; min-height: 28cqh; border-radius: 5cqw; overflow: hidden;
+  box-shadow: 0 1.5cqw 0 color-mix(in srgb, var(--primary) 25%, transparent); }
+.l-card.has-logo-bottom, .l-card:has(> .logo.bc) { padding-bottom: 20cqw; }
+
+/* 4) Type-led: big centred headline, small round photo or mascot */
+.l-type { display: flex; flex-direction: column; align-items: center; justify-content: safe center; text-align: center; padding: 10cqw 8cqw; gap: 4cqw; }
+.l-type .copy { position: relative; z-index: 3; min-height: 0; overflow: hidden; }
+.l-type .sub { margin-left: auto; margin-right: auto; }
+.l-type .photo-layer { position: relative; z-index: 1; width: min(38cqw, 28cqh); height: min(38cqw, 28cqh); border-radius: 50%; overflow: hidden; flex: none;
+  border: 1.2cqw solid var(--light, #fff); }
+.l-type:has(> .logo.bc) { padding-bottom: 20cqw; }
+.l-type:has(> .logo.tl, > .logo.tr) { padding-top: 18cqw; }
+
+/* 5) Hero (key visual): copy zone + photo zone */
+.l-hero { display: grid; grid-template-columns: minmax(0, 44fr) minmax(0, 56fr); grid-template-rows: minmax(0, 1fr); }
+.l-hero .panel { padding: 6cqw 7cqw; }
+.l-hero .photo-layer { position: relative; z-index: 1; overflow: hidden; }
+
+/* 6) OOH: giant type, one image, giant logo: built for 3-second reading */
+.l-ooh { display: grid; grid-template-columns: minmax(0, 52fr) minmax(0, 48fr); grid-template-rows: minmax(0, 1fr); }
+.l-ooh .panel { padding: 5cqw 6cqw; }
+.l-ooh .headline { font-size: 7.2cqw; }
+.l-ooh .photo-layer { position: relative; z-index: 1; overflow: hidden; }
+.l-ooh .logo { width: 36cqw; height: 15cqw; }
+
+/* ---------- tall frames (posts 4:5, stories 9:16, posters): stack zones ---------- */
+@container (aspect-ratio < 0.95) {
+  .l-split { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+  .l-hero { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 54fr) minmax(0, 46fr); }
+  .l-hero .photo-layer { order: -1; }
+  .l-hero .panel { justify-content: safe flex-start; padding-top: 5cqw; }
+  .l-hero .headline { font-size: 9cqw; } .l-hero .headline.xl { font-size: 11cqw; }
+  .l-ooh { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 55fr) minmax(0, 45fr); }
+  .l-ooh .headline { font-size: 12cqw; } .l-ooh .photo-layer { order: -1; }
+}
+/* wide frames (banners, billboards): side-by-side rows and smaller type for the shorter height */
+@container (aspect-ratio > 1.2) {
+  .l-card { flex-direction: row; align-items: center; }
+  .l-card .copy { flex: 0 0 46%; padding-right: 0; max-height: 100%; align-self: stretch; display: flex; flex-direction: column; justify-content: safe center; }
+  .l-card .photo-layer { align-self: stretch; min-height: 0; }
+  .l-type { flex-direction: row; text-align: left; justify-content: safe center; }
+  .l-type .copy { flex: 0 1 60%; } .l-type .sub { margin-left: 0; }
+  .l-type .photo-layer { width: min(30cqw, 60cqh); height: min(30cqw, 60cqh); }
+}
+@container (aspect-ratio > 1.4) {
+  .headline { font-size: 6.4cqw; } .headline.xl { font-size: 8cqw; } .headline.sm { font-size: 4.8cqw; }
+  .l-hero .headline, .l-split .headline { font-size: 5.2cqw; } .l-hero .headline.xl, .l-split .headline.xl { font-size: 6.2cqw; }
+  .l-ooh .headline { font-size: 6.4cqw; }
+  .sub { font-size: 1.9cqw; } .kicker { font-size: 2.4cqw; } .cta { font-size: 1.8cqw; padding: 1.1cqw 2.6cqw; margin-top: 2.4cqw; }
+  .logo { width: 13cqw; height: 6cqw; } .logo.lg { width: 20cqw; height: 9cqw; } .logo.sm { width: 9cqw; height: 4cqw; }
+  .l-ooh .logo { width: 22cqw; height: 9cqw; }
+  .logo.tl, .logo.tr { top: 4cqw; } .logo.tl, .logo.bl { left: 4cqw; } .logo.tr, .logo.br { right: 4cqw; } .logo.bl, .logo.br, .logo.bc { bottom: 4cqw; }
+  .badge { font-size: 1.8cqw; padding: 1cqw 2cqw; top: 4cqw; right: 4cqw; } .badge.round { width: 12cqw; height: 12cqw; }
+  .l-photo .copy { left: 5cqw; right: 45cqw; bottom: 6cqw; max-height: 70cqh; } .shape { width: 4cqw; height: 4cqw; }
+  .l-card, .l-type { padding: 6cqh 5cqw; gap: 4cqw; }
+}
+
+/* ---------- keep copy clear of a corner logo on the same zone (logo may be nested anywhere) ---------- */
+.l-split:has(> .logo.tl) > .panel:first-child, .l-split:has(> .logo.tr) > .panel:last-child { padding-top: 19cqw; }
+.l-hero:has(> .logo.tl) > .panel:first-child, .l-ooh:has(> .logo.tl) > .panel:first-child { padding-top: 19cqw; }
+.l-card:has(> .logo.tl, > .logo.tr) > .copy { padding-top: 12cqw; }
+@container (aspect-ratio < 0.95) {
+  .l-split:has(> .logo.tl) > .panel:first-child { padding-top: 17cqw; }
+  .l-hero:has(> .logo.tl) > .panel:first-child, .l-ooh:has(> .logo.tl) > .panel:first-child { padding-top: 5cqw; }
+}
+@container (aspect-ratio > 1.4) {
+  .l-split:has(> .logo.tl) > .panel:first-child, .l-hero:has(> .logo.tl) > .panel:first-child, .l-ooh:has(> .logo.tl) > .panel:first-child,
+  .l-split:has(> .logo.tr) > .panel:last-child { padding-top: 22cqh; }
+}
+
+/* decorative shapes (optional): <i class="shape star" style="top:10cqw;left:70cqw"></i> */
+.shape { position: absolute; z-index: 2; display: block; width: 7cqw; height: 7cqw; background: var(--accent); pointer-events: none; }
+.shape.circle { border-radius: 50%; }
+.shape.star { clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.shape.sparkle { clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); }
+
+/* stories 9:16 (last, so they win): keep copy and logo out of the platform UI zones (top ~12%, bottom ~14%) */
+@container (aspect-ratio < 0.6) {
+  .l-photo .copy { bottom: 14cqh; }
+  .logo.tl, .logo.tr { top: 13cqh; } .badge { top: 13cqh; }
+  .l-split .panel, .l-hero .panel, .l-card, .l-type { padding-top: 13cqh; padding-bottom: 14cqh; }
+  .l-split:has(> .logo.tl) > .panel:first-child, .l-card:has(> .logo.tl, > .logo.tr) > .copy { padding-top: calc(13cqh + 13cqw); }
+  .l-type:has(> .logo.tl, > .logo.tr) { padding-top: calc(13cqh + 12cqw); }
+}
+/* a corner badge in a centred type layout: keep the copy below it */
+.l-type:has(> .badge) { padding-top: 18cqw; }
+.l-type:has(> .badge) .photo-layer, .l-type:has(> .logo.bc) .photo-layer { width: min(28cqw, 20cqh); height: min(28cqw, 20cqh); }
+.l-type:has(> .badge):has(> .logo.bc) { gap: 3cqw; }
+@container (aspect-ratio > 1.2) { .l-type:has(> .badge) { padding-top: 8cqh; } .l-type:has(> .badge) .copy { padding-right: 16cqw; } }

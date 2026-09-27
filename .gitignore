@@ -1,0 +1,9 @@
+_test/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+dist/
+# local dev notes (personal context), not published
+Claude.md
+CLAUDE.md

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>CEMMY: Lid seal</title>
+<link rel="stylesheet" href="../brand.css">
+<link rel="stylesheet" href="../../../_system/layouts.css">
+<script src="../../../_system/compose.js"></script>
+<style>
+  .frame { container-type: inline-size; background: var(--light); position: relative; }
+  .seal {
+    position: absolute; inset: 6cqw;
+    border-radius: 50%;
+    background: var(--light);
+    border: 2.4cqw dashed var(--secondary);
+    outline: .6cqw solid var(--primary);
+    outline-offset: -4.2cqw;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .seal .logo { position: static; width: 38cqw; height: auto; margin-bottom: 2cqw; }
+  .seal .headline { font-family: var(--font-accent); color: var(--primary); font-size: 8cqw; line-height: 1; }
+  .seal .sub { font-family: var(--font-body); font-weight: 700; color: var(--accent-2); font-size: 3cqw; letter-spacing: .1em; text-transform: uppercase; margin-top: 1cqw; }
+</style>
+</head><body>
+<main class="frame" style="width:1000px;height:1000px">
+  <i class="shape star" style="top:4cqw;left:4cqw"></i>
+  <i class="shape star" style="bottom:4cqw;right:4cqw"></i>
+  <div class="seal">
+    <div class="logo inline lg" data-logo="logo-primary"></div>
+    <p class="headline">Meet Us<br>Tonight</p>
+    <p class="sub">under the star</p>
+  </div>
+</main>
+</body></html>
