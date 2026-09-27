@@ -179,6 +179,17 @@
     addEventListener('resize', size); size();
   }
 
+  // Typographic apostrophes and quotes in on-image text ("It's" → "It’s"), which models often forget.
+  function smartQuotes() {
+    Array.prototype.forEach.call(document.querySelectorAll('.headline, .sub, .kicker, .cta, .badge, .copy p, .panel p'), function (el) {
+      var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      while (w.nextNode()) {
+        var t = w.currentNode;
+        t.nodeValue = t.nodeValue.replace(/(\w)'(\w)/g, '$1’$2').replace(/(^|[\s(\[—–-])'/g, '$1‘').replace(/'/g, '’')
+          .replace(/(^|[\s(\[—–-])"/g, '$1“').replace(/"/g, '”');
+      }
+    });
+  }
   // Headlines never break inside a hyphenated word ("check-/ins"): keep each such word on one line.
   function keepHyphenatedWords() {
     Array.prototype.forEach.call(document.querySelectorAll('.headline'), function (h) {
@@ -194,7 +205,7 @@
   }
 
   function run() {
-    keepHyphenatedWords();
+    smartQuotes(); keepHyphenatedWords();
     var logoReady = new Promise(function (done) {
       var s = document.createElement('script');
       s.src = '../logos.js?v=' + Date.now();
