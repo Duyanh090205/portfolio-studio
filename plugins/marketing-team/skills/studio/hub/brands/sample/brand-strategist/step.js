@@ -1,4 +1,4 @@
-HUB.step("demo-cemmy", "brand-strategist", {
+HUB.step("sample", "brand-strategist", {
   "summary": "Direction C, Sweet Star Parlour, is built out. The brief's problem is that big chains sell the scoop as an ordinary treat, so the fix is not a better flavour claim but a better reason to leave the house: CEMMY becomes a place and a time, the neon-lit berry parlour you agree to meet at. Parlour Green grounds it, Neon Blush and Marquee Gold give it the shop-sign glow, and the star sits on top of the marquee plaque like a sign you can see from the end of the street.",
   "directions": [
     {

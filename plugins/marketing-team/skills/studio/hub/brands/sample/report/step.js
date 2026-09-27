@@ -1,4 +1,4 @@
-HUB.step("demo-cemmy", "report", {
+HUB.step("sample", "report", {
   "summary": "October's first full month shows CEMMY's engagement rate climbing to 6.8% (from 6.0%) even as reach grew 33%, led by the 'Bring The Group' promo post, while new-follower growth cools off the launch spike as expected.",
   "outputs": [
     { "id": "report", "type": "doc", "title": "Monthly report", "file": "report/report.html", "width": 1200 },

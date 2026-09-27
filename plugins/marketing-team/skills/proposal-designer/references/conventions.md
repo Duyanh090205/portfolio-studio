@@ -205,6 +205,6 @@ A brand with `"demo": true` (the sample CEMMY) is a read-only example. Never mod
 ```
 
 ## Chat fallback (no connected folder)
-1. **Build the workspace** in `/mnt/user-data/outputs/PortfolioStudio/` by copying `${CLAUDE_SKILL_DIR}/../studio/assets/workspace/.` if available. Otherwise tell the user to download the starter zip from the project page.
+1. **Build the workspace** in `/mnt/user-data/outputs/PortfolioStudio/` by copying `${CLAUDE_SKILL_DIR}/../studio/hub/.` if available. Otherwise tell the user to download the starter zip from the project page.
 2. **At the end of every step,** zip the whole folder and offer it as a download. Tell the user to unzip it over their local Portfolio Studio folder, then press ↻ in HUB.html.
 3. **At the start of a new chat,** if the brand files are missing, ask the user to attach the latest zip, and unzip it before working.

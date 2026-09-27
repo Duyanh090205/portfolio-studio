@@ -38,7 +38,7 @@ plugins/marketing-team/
   shared/html-guide.md                 layout kit + HTML rules (roles 2–9)
   skills/<skill>/SKILL.md              one skill per team member
   skills/<skill>/references/           synced copies of shared/ (by tools/sync_shared.py)
-  skills/studio/assets/workspace/      HUB.html + _system/ (app.js, app.css, compose.js, layouts.css, VERSION) + sample brand
+  skills/studio/hub/                   HUB.html + _system/ (app.js, app.css, compose.js, layouts.css, VERSION) + sample brand
 tools/sync_shared.py                   sync shared/ into skills
 tools/build.py                         sync + LF-normalise + build dist/marketing-team.zip and dist/portfolio-studio-starter.zip
 ```

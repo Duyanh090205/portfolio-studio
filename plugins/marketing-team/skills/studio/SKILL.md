@@ -12,11 +12,11 @@ Read `${CLAUDE_SKILL_DIR}/references/conventions.md` and `${CLAUDE_SKILL_DIR}/re
    - Use the connected folder, or its `Portfolio Studio/` subfolder if that already holds `HUB.html`.
    - If `HUB.html` exists, go to step 4.
    - Otherwise set up in the connected folder if it is empty or nearly empty. If not, set up in a new `Portfolio Studio/` subfolder.
-2. **Copy the template with one shell command:** `cp -r "${CLAUDE_SKILL_DIR}/assets/workspace/." "<workspace>/"`. Use the workspace path as the shell sees it; check it with `ls` first.
+2. **Copy the template with one shell command:** `cp -r "${CLAUDE_SKILL_DIR}/hub/." "<workspace>/"`. Use the workspace path as the shell sees it; check it with `ls` first.
    - **Never recreate these files by reading and retyping them.** `app.js` alone is about 20k tokens.
    - If the command is refused or the shell can't see the folder, reply: "Claude cần quyền copy file để cài HUB. Khi hộp xin quyền hiện ra, bấm **Allow / Cho phép**, rồi gõ lại: Setup Portfolio Studio." If it fails again, give the starter-zip fallback from the project README: download `portfolio-studio-starter.zip`, then unzip it into the folder.
 3. **Verify the copy.** Read `<workspace>/_system/VERSION`; if it is missing, the copy failed (see above). Then ask the user's name if unknown and set `"owner"` in `portfolio.js` with one Edit.
-4. **Update an outdated HUB.** Compare `<workspace>/_system/VERSION` with `${CLAUDE_SKILL_DIR}/assets/workspace/_system/VERSION`. If the workspace's is older or missing, copy **only** `HUB.html` and `_system/`, the same way. Never touch `portfolio.js` or `brands/`.
+4. **Update an outdated HUB.** Compare `<workspace>/_system/VERSION` with `${CLAUDE_SKILL_DIR}/hub/_system/VERSION`. If the workspace's is older or missing, copy **only** `HUB.html` and `_system/`, the same way. Never touch `portfolio.js` or `brands/`.
 5. **Reply in Vietnamese:**
    - Open the folder and double-click **HUB.html** (Chrome or Edge), then pin the tab.
    - A sample brand, CEMMY, is included to show what each team member produces.
@@ -68,4 +68,4 @@ The HUB flags syntax errors in `brand.js`, `logos.js`, `portfolio.js` or `<step>
 | Competitor ads research, new ad concepts | `ads-manager` |
 | Performance report | `report-analyst` |
 | Turn a skipped step back on ("Bật lại <Step> cho <Name>") | Set that step to `todo` in brand.js, then hand over to its skill |
-| Remove the sample brand ("xoá brand mẫu") | Remove its slug from `portfolio.js` and tell the user they may delete `brands/demo-cemmy/` |
+| Remove the sample brand ("xoá brand mẫu") | Remove its slug from `portfolio.js` and tell the user they may delete `brands/sample/` |

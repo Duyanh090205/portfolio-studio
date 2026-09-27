@@ -1,4 +1,4 @@
 HUB.portfolio({
   "owner": "",
-  "brands": ["demo-cemmy"]
+  "brands": ["sample"]
 });

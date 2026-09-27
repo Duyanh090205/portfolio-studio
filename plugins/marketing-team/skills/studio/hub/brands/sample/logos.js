@@ -1,4 +1,4 @@
-HUB.logos("demo-cemmy", [
+HUB.logos("sample", [
   {
     "id": "logo-primary",
     "name": "Primary logo",

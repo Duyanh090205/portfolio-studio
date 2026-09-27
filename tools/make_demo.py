@@ -2,7 +2,7 @@
 
     python tools/make_demo.py "E:/Portfolio Studio Test v3/brands/cemmy"
 
-Copies it to skills/studio/assets/workspace/brands/demo-cemmy, renames the slug, marks it
+Copies it to skills/studio/hub/brands/sample, renames the slug, marks it
 "demo": true with every step done, and lists it in the template portfolio.js.
 """
 from pathlib import Path
@@ -12,8 +12,8 @@ import shutil
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
-WS = ROOT / "plugins" / "marketing-team" / "skills" / "studio" / "assets" / "workspace"
-SLUG = "demo-cemmy"
+WS = ROOT / "plugins" / "marketing-team" / "skills" / "studio" / "hub"
+SLUG = "sample"
 
 src = Path(sys.argv[1])
 old = src.name

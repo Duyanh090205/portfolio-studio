@@ -1,4 +1,4 @@
-HUB.step("demo-cemmy", "video", {
+HUB.step("sample", "video", {
   "summary": "A 15-second vertical motion ad that replays the 'Meet Under The Star' idea as a light-up ritual: the star switches on, the invite headline lands, a real evening photo grounds it, then the CTA and logo close the loop.",
   "outputs": [
     {

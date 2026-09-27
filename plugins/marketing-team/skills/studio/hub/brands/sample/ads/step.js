@@ -1,4 +1,4 @@
-HUB.step("demo-cemmy", "ads", {
+HUB.step("sample", "ads", {
   "summary": "Desk research (unverified): no competitor screenshots or live search were available, so patterns below come from general knowledge of Baskin Robbins, Häagen-Dazs and Van Leeuwen. Across the category, ads sell the product (flavor, texture, order-now); none sell the group hangout occasion. CEMMY's lit marquee star and evening-parlour world are an ownable ritual cue no competitor uses, so all three concepts extend the 'Meet Under The Star' platform into paid social.",
   "outputs": [
     { "id": "analysis", "type": "doc", "title": "Competitive analysis", "file": "ads/analysis.html" },

@@ -1,4 +1,4 @@
-HUB.step("demo-cemmy", "packaging", {
+HUB.step("sample", "packaging", {
   "summary": "The pint tub stays the hero pack, its cream sign-panel repeating the plaque logo and a Caveat flavour line. Variants are colour-coded by a lid band, Neon Blush for strawberry-led, Blueberry Night for blueberry-led, and a Marquee Gold band marks a limited 'Meet Under The Star' run, tying packaging straight back to the campaign.",
   "outputs": [
     { "id": "pack-front", "type": "visual", "title": "Pint tub front", "file": "packaging/pack-front.html", "size": "1200x1500",

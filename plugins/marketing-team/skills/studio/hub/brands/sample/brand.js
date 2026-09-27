@@ -1,5 +1,5 @@
 HUB.brand({
-  "slug": "demo-cemmy",
+  "slug": "sample",
   "name": "CEMMY",
   "category": "Ice cream",
   "oneLiner": "Strawberry-and-blueberry ice cream made for sharing the sweet moment.",

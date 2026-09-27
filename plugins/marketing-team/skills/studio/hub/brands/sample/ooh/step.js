@@ -1,4 +1,4 @@
-HUB.step("demo-cemmy", "ooh", {
+HUB.step("sample", "ooh", {
   "summary": "Takes the campaign's key visual to the street: the same headline and evening parlour scene, cut down to one image, one giant logo and five words, built to read from a moving car or a bus queue.",
   "outputs": [
     { "id": "billboard", "type": "visual", "title": "Billboard", "file": "ooh/billboard.html", "size": "2400x1200",

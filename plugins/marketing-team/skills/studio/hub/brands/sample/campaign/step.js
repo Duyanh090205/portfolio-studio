@@ -1,4 +1,4 @@
-HUB.step("demo-cemmy", "campaign", {
+HUB.step("sample", "campaign", {
   "summary": "Groups don't schedule an ice-cream stop, they drift toward whoever's table is already lit up and posting — CEMMY can own that pull instead of competing on flavor claims alone (assumed).",
   "choices": [
     {

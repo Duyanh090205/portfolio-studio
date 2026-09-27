@@ -1,4 +1,4 @@
-HUB.step("demo-cemmy", "proposal", {
+HUB.step("sample", "proposal", {
   "summary": "The deck moves from the category's flavor-first ads (desk research, unverified) to CEMMY's real reason to leave the house: a lit star sign that turns an ordinary evening into a plan. It then walks the brand kit, the 'Meet Under The Star' campaign, its social, packaging, OOH and motion executions, and closes on the goals that would prove it worked.",
   "outputs": [
     { "id": "deck", "type": "doc", "title": "Proposal deck", "file": "proposal/proposal.html", "width": 1600 },

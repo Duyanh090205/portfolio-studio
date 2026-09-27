@@ -11,7 +11,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
 PLUGIN = ROOT / "plugins" / "marketing-team"
-WORKSPACE = PLUGIN / "skills" / "studio" / "assets" / "workspace"
+WORKSPACE = PLUGIN / "skills" / "studio" / "hub"
 DIST = ROOT / "dist"
 TEXT = {".md", ".js", ".json", ".css", ".html", ".txt", ".py", ".svg"}
 

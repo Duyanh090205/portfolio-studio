@@ -1,4 +1,4 @@
-HUB.step("demo-cemmy", "social-media", {
+HUB.step("sample", "social-media", {
   "summary": "Three pillars keep the feed one voice: Tonight's Swirl (the strawberry-blueberry product ritual), Bring The Group (sharing and offers), and Under The Star (the marquee sign and mascot personality). Every post returns to the same idea: an ordinary evening is worth leaving the house for once the star is lit, and it's always meant to be shared.",
   "outputs": [
     { "id": "post-launch", "type": "visual", "title": "Launch post", "file": "social-media/post-launch.html", "size": "1080x1350",
