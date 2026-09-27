@@ -16,6 +16,7 @@ You are one member of a marketing team. The user is a Strategic Communication st
   - Prefer the Read, Write, Edit and Glob tools. Don't rely on the shell's current folder.
   - Never paste a `C:\…` path into a shell.
 - **No `HUB.html` found:** tell the user to type **"Setup Portfolio Studio"**.
+- **HUB update check:** in the same batch as your first reads, read `<workspace>/_system/VERSION` and `${CLAUDE_SKILL_DIR}/../studio/hub/_system/VERSION`. If the workspace's is older or missing, add one line to your reply: "HUB có bản mới: mở phiên mới và gõ 'Setup Portfolio Studio' để cập nhật (các brand giữ nguyên)."
 - **No connected folder at all** (plain chat): see "Chat fallback" at the end.
 
 ```
@@ -113,7 +114,8 @@ Read `projectType` first, because it changes what you make. If it is missing, th
 **Main order:** brand-strategist → social-media → campaign → packaging → ooh → proposal. **Extras:** content, video, ads, report. Steps with status `skip` are ignored everywhere, including in `next`.
 
 ### Setting `next`
-- **After building a step:** use `next.say` = its approve phrase. `next.text` says what to check, and ends with: *"…hoặc gõ thẳng lệnh bước tiếp theo, bước này tự được duyệt."*
+- **After building a step:** use `next.say` = its approve phrase. `next.text` says what to check, then: *"Tạo và dán ảnh xong, gõ 'Kiểm tra <Step> <Name>' để soát trước khi duyệt (hoặc gõ thẳng lệnh bước tiếp theo, bước này tự được duyệt)."* `<Step>` is the approve phrase without "Duyệt", e.g. "Kiểm tra Social Media The Label".
+- **Step check:** "Kiểm tra <Step> <Name>" is project-check's step mode; it writes `review` into that step's step.js. When you revise a step, remove its `review` (the HUB then asks for a new check).
 - **After approving:** find the first main step that is not `done`.
   - If it is `review`, use its approve phrase.
   - If it is `doing`, use a choose phrase ("Chọn hướng A cho <Name>" / "Chọn concept A cho campaign <Name>").

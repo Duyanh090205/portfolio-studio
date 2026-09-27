@@ -3,7 +3,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '0.4.6';
+  var VERSION = '0.5.0';
   var S = { portfolio: null, brands: {}, logos: {}, steps: {}, errors: [], img: {}, sel: null, cd: false, qa: {}, dir: null, dirOk: false };
 
   window.HUB = {
@@ -658,6 +658,24 @@
     return s.id === 'brand-strategist' && b && (b.projectType === 'concept' || b.projectType === 'content') ? 'Sonnet' : (s.model || 'Sonnet');
   }
 
+  // "Duyệt Social Media The Label" → "Kiểm tra Social Media The Label" (project-check, step mode)
+  function checkPhrase(s, b) { return fill(s.approve || '', b).replace(/^Duyệt/, 'Kiểm tra'); }
+  // Result of a step-mode check, written by project-check into that step's step.js as `review`.
+  function reviewBox(b, s, r) {
+    if (!s || !s.approve) return '';
+    if (!r) return effStatus(b, s.id) === 'review' ? '<div class="reviewbox empty"><b>🔍 Chưa kiểm tra.</b> Tạo và dán ảnh xong, dán vào Claude: <span class="say">' + esc(checkPhrase(s, b)) + '</span> ' + copyBtn(checkPhrase(s, b), 'Copy') + '</div>' : '';
+    var sc = r.scores || {}, names = { fidelity: 'Đúng brand', legibility: 'Dễ đọc', craft: 'Tay nghề', fit: 'Bám insight', distinct: 'Khác biệt' };
+    var keys = Object.keys(names).filter(function (k) { return sc[k] != null; });
+    var avg = keys.length ? keys.reduce(function (a, k) { return a + (+sc[k] || 0); }, 0) / keys.length : null;
+    var bad = (r.items || []).filter(function (x) { return x.level === '✗' || x.level === '⚠'; }).length;
+    var fix = 'Sửa các mục cần sửa của ' + checkPhrase(s, b).replace(/^Kiểm tra /, '');
+    return '<div class="reviewbox"><div class="rhead"><b>🔍 Kiểm tra' + (r.date ? ' · ' + esc(r.date) : '') + '</b>' + (avg != null ? '<span class="ravg">' + avg.toFixed(1) + '/10</span>' : '') +
+      keys.map(function (k) { return '<span class="rsc">' + names[k] + ' <b>' + esc(sc[k]) + '</b></span>'; }).join('') + '</div>' +
+      (r.verdict ? '<p class="rverdict">' + esc(r.verdict) + '</p>' : '') +
+      '<ul class="ritems">' + (r.items || []).map(function (x) { return '<li class="l' + (x.level === '✗' ? 'x' : x.level === '⚠' ? 'w' : 'ok') + '"><span>' + esc(x.level || '') + '</span><div><b>' + esc(x.where || '') + '</b> ' + esc(x.text || '') + '</div></li>'; }).join('') + '</ul>' +
+      '<div class="ract">' + (bad ? copyBtn(fix, '🛠 Copy lệnh sửa') + ' ' : '') + copyBtn(fill(s.approve, b), 'Copy lệnh duyệt', bad ? '' : 'primary') + ' ' + copyBtn(checkPhrase(s, b), '🔍 Kiểm tra lại') + '</div></div>';
+  }
+
   function stepper(b) {
     function node(s) {
       var st = effStatus(b, s.id);
@@ -672,7 +690,8 @@
       var s = STEPS.filter(function (x) { return x.id === S.sel; })[0], d = stepOf(b, s.id), st = effStatus(b, s.id), say = fill(s.say, b);
       var cmds = '<p class="small">Gõ cho Claude (model <b>' + esc(modelFor(s, b)) + '</b>):</p><p class="say">' + esc(say) + '</p>' + copyBtn(say, 'Copy câu lệnh');
       if (st === 'skip') { var on = 'Bật lại ' + s.name + ' cho ' + b.name; cmds = '<p class="small">Bước này không dùng cho <b>' + esc(typeLabel(b)) + '</b>. Muốn dùng thì gõ:</p><p class="say">' + esc(on) + '</p>' + copyBtn(on, 'Copy câu lệnh'); }
-      if (st === 'review' && s.approve) cmds = '<p class="small">Ưng rồi thì duyệt:</p><p class="say">' + esc(fill(s.approve, b)) + '</p>' + copyBtn(fill(s.approve, b), 'Copy câu lệnh', 'primary') +
+      if (st === 'review' && s.approve) cmds = '<p class="small">① Tạo và dán ảnh xong, <b>kiểm tra trước khi duyệt</b>:</p><p class="say">' + esc(checkPhrase(s, b)) + '</p>' + copyBtn(checkPhrase(s, b), '🔍 Copy lệnh kiểm tra') +
+        '<p class="small" style="margin-top:10px">② Ưng rồi thì duyệt:</p><p class="say">' + esc(fill(s.approve, b)) + '</p>' + copyBtn(fill(s.approve, b), 'Copy câu lệnh', 'primary') +
         '<p class="small" style="margin-top:10px">Hoặc làm lại / sửa: nói rõ muốn đổi gì.</p>';
       out += '<div class="stepcard"><div><h4>' + esc(s.n !== '+' ? s.n + '. ' : '') + esc(s.name) + ' ' + pill(st) + ' <span class="weight w-' + esc(s.weight || '') + '">' + esc(s.weight || '') + '</span></h4>' +
         '<p>' + esc(s.desc) + '</p>' +
@@ -775,7 +794,7 @@
     var existing = mine.length ? section('Existing work (my design)', '<div class="slots">' + mine.map(function (p) {
       return '<figure class="slot"><img src="brands/' + esc(b.slug) + '/' + esc(p) + '" alt="" style="width:100%;border-radius:10px;background:#fff"><figcaption class="muted small">' + esc(p.split('/').pop()) + '</figcaption></figure>';
     }).join('') + '</div>', 'span2') : '';
-    var out = '<div class="board-actions"><button class="btn" data-cdtoggle>🎨 Mang sang Claude Design</button><button class="btn" data-print>🖨 Xuất PDF brand board</button></div>' + cdPanel(b) + '<div class="board">' + existing;
+    var out = '<div class="board-actions"><button class="btn" data-cdtoggle>🎨 Mang sang Claude Design</button><button class="btn" data-print>🖨 Xuất PDF brand board</button></div>' + cdPanel(b) + reviewBox(b, STEPS.filter(function (x) { return x.id === 'brand-strategist'; })[0], ((S.steps[b.slug] || {})['brand-strategist'] || {}).review) + '<div class="board">' + existing;
     if (logos.length) {
       out += section('Main logo', logoCard(b, logos[0], true) + (k.logo ? '<p class="muted">' + esc(k.logo) + '</p>' : ''), 'span2');
       if (logos.length > 1) out += section('Logo variations', '<div class="logos">' + logos.slice(1).map(function (l) { return logoCard(b, l); }).join('') + '</div>');
@@ -923,6 +942,7 @@
     return [
       ['Sai tỉ lệ khung', 'Keep everything exactly the same, but make the image ' + o + ' ' + r + ': extend the background, do not crop or stretch the subject.', true],
       prod && ['Sản phẩm bị vẽ khác', 'Same scene and lighting; make the product match Image ' + prod.n + ' exactly: shape, proportions, material and colour, cap and printed type. Change nothing else.'],
+      prod && ['Chai nào cũng cùng tên', 'Keep everything identical. Change only the printed product name on each item, left to right, to: [name 1], [name 2], [name 3]… (write the names). On the new items remove the smaller lines under the name. Change nothing else.'],
       logo && ['Logo méo, sai chữ', 'Make the logo exactly like Image ' + logo.n + ': same letterforms and spelling, larger, flat and facing the camera. Change nothing else.'],
       ['Có chữ lạ', (logo || prod ? 'Remove every letter or word that is not on the product or the logo.' : 'Remove every letter, word and logo from the image.') + ' Change nothing else.'],
       ['Rối mắt', 'Remove the extra props and simplify the background. Do not move the main subject. Keep everything else the same.'],
@@ -994,7 +1014,7 @@
   function viewStep(b, id) {
     var d = (S.steps[b.slug] || {})[id] || {}, meta = STEPS.concat(UTIL).filter(function (x) { return x.id === id; })[0] || {};
     var out = '<div class="stephead"><h2>' + esc(meta.name || id) + ' ' + (meta.util ? '' : pill(effStatus(b, id))) + '</h2>' +
-      (d.summary ? '<p class="lead">' + esc(d.summary) + '</p>' : '') + '</div>' + needBox(b, meta);
+      (d.summary ? '<p class="lead">' + esc(d.summary) + '</p>' : '') + '</div>' + reviewBox(b, meta, d.review) + needBox(b, meta);
     if (d.choices && d.choices.length) {
       var picking = !d.chosen;
       out += (picking ? '<h3 class="grouph">Chọn một concept để làm tiếp</h3>' : '<details class="history"><summary>Các concept đã đề xuất (đã chọn ' + esc(d.chosen) + ')</summary>') +

@@ -1,7 +1,7 @@
 {
   "name": "marketing-team",
   "displayName": "Marketing Team",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "description": "A marketing team of Claudes for fictional-brand portfolio work. Each role is a skill; roles hand off through files in a local Portfolio Studio folder, tracked in a visual HUB.html.",
   "license": "MIT",
   "author": {

@@ -57,7 +57,9 @@ Một **team marketing gồm 9 "nhân sự" Claude** giúp bạn làm portfolio 
    - Ưng ảnh nào thì **tải về rồi kéo thả** vào ô của ảnh đó, hoặc chuột phải → Sao chép hình ảnh → bấm vào ô → **Ctrl+V**. Ảnh tự lưu đúng tên và tự vào mọi thiết kế.
    - Billboard và bao bì: AI tạo **cảnh để trống**, rồi bạn ghép thiết kế thật vào bằng Canva. HUB có hướng dẫn ngay ở ảnh đó.
    - Với brand thật: ảnh sản phẩm là **ảnh bạn tự chụp**. HUB ghi hướng dẫn chụp thay cho prompt.
-5. **Duyệt hoặc sửa:**
+5. **Kiểm tra rồi mới duyệt** (mỗi bước):
+   - Tạo và dán ảnh xong, bấm **🔍 Copy lệnh kiểm tra** (bấm vào thẻ thành viên, hoặc hộp ở đầu tab của bước đó) và dán vào Claude, ví dụ `Kiểm tra Social Media The Label`.
+   - Claude soát riêng bước đó: đọc chữ trong ảnh, nhìn thử thiết kế, đối chiếu nghiên cứu, chấm 5 tiêu chí. Kết quả hiện ở đầu tab, kèm nút **🛠 Copy lệnh sửa**.
    - Ưng thì gõ lệnh **Duyệt …**, hoặc gõ thẳng lệnh bước tiếp theo (bước trước tự được duyệt).
    - Muốn sửa thì nói rõ, ví dụ "đổi headline post promo ngắn hơn".
 6. **Trước khi đăng portfolio:** gõ **`Kiểm tra dự án <tên>`**. Claude soát chính tả, số thứ tự mục, disclaimer, claim và alt text.
@@ -104,7 +106,8 @@ Một **team marketing gồm 9 "nhân sự" Claude** giúp bạn làm portfolio 
   /plugin marketplace update portfolio-studio
   /plugin update marketing-team@portfolio-studio
   ```
-- Sau đó mở **phiên mới** và gõ `Setup Portfolio Studio`. Claude chỉ thay HUB (`HUB.html`, `_system/`), **không đụng** vào các brand của bạn.
+- Muốn **tự động**: gõ `/plugin` → **Marketplaces** → **portfolio-studio** → bật **auto-update** (nếu bản Claude có mục này).
+- Sau đó mở **phiên mới** và gõ `Setup Portfolio Studio`. Claude chỉ thay HUB (`HUB.html`, `_system/`), **không đụng** vào các brand của bạn. Nếu quên, thành viên nào thấy HUB cũ sẽ tự nhắc.
 
 ---
 
