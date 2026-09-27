@@ -157,6 +157,10 @@ HUB.step("cemmy", "social-media", {
 
 ### Image tasks (`images`)
 The user makes these in Gemini or ChatGPT. The HUB adds a copy button and detects the saved file.
+- **Reuse first.** Before adding a task, look at the photos in `input/` and the images already made (`images/`, other steps' tasks). If one already shows what the slot needs, point the slot at it and add **no** task:
+  - the user's own photo: `<img data-img="input/back-label.png">`;
+  - another step's image: `<img data-img="bs-social-style">`.
+  - Always reuse real photos that show small print, labels or QR codes. AI redraws those badly.
 - **`id`:** kebab-case ASCII, unique in the brand, starting with the step code: `bs-` brand strategist (legacy ids without a prefix are fine), `sm-`, `cp-`, `pk-`, `oh-`, `vd-`, `ad-`.
 - **`step`:** must equal the step id exactly, or the task won't show.
 - **`ratio`:** equals the **slot** the photo fills in your HTML. See the slot table in html-guide.

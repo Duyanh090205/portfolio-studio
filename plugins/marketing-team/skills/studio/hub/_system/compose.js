@@ -1,6 +1,7 @@
 /* Portfolio Studio compose helper v0.3, included by every visual/doc HTML inside brands/<slug>/<step>/.
    - <div data-logo="logo-primary"></div>  → injects that logo's SVG from ../logos.js (aligned to the side it sits on)
    - <img data-img="sm-launch-bg">          → loads ../images/<id>.png|jpg|jpeg|webp, or a branded placeholder showing the slot size
+   - <img data-img="input/back.png">       → a path (has a '/') loads the user's own file from the brand folder as is
    - fits headlines that overflow or collide with the logo/badge, then reports remaining layout problems to the HUB
    - opened on its own: scales the design to fit the window, and Ctrl+P prints one page at the exact design size
    - fires document event 'compose:ready' when logos, images and fitting are done (start animations on it) */
@@ -64,6 +65,7 @@
       return new Promise(function (done) {
         var id = img.getAttribute('data-img'), i = 0;
         img.onload = function () { img.onload = img.onerror = null; done(); };
+        if (id.indexOf('/') >= 0) { img.onerror = function () { img.onerror = img.onload = null; placeholder(img, id); done(); }; img.src = '../' + id; return; }
         img.onerror = function () {
           if (i < EXT.length) { img.src = '../images/' + id + '.' + EXT[i++]; return; }
           img.onerror = null; img.onload = null; placeholder(img, id); done();

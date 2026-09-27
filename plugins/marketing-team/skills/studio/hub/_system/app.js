@@ -3,7 +3,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '0.4.3';
+  var VERSION = '0.4.4';
   var S = { portfolio: null, brands: {}, logos: {}, steps: {}, errors: [], img: {}, sel: null, cd: false, qa: {}, dir: null, dirOk: false };
 
   window.HUB = {
